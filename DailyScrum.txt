@@ -1,19 +1,17 @@
 2024/09/13 Amine
 1. Done since last scrum
-- 
-- 
+- First scrum 
 2. Plan until next Scrum
-- 
-- 
+- update the database structure
+- host the database on teh cloud
 3. Need assistance / figure things out
--
+- how to use RDS
 
 2024/09/13 Sean
 1. Done since last scrum
-- 
-- 
+- First scrum
 2. Plan until next Scrum
-- 
-- 
+- Update proposal based on teacher's feedback, then submit it
+- Set up Trello Board with Project setup card and at least 5 user stories
 3. Need assistance / figure things out
 - 
