@@ -14,4 +14,25 @@
 - Update proposal based on teacher's feedback, then submit it
 - Set up Trello Board with Project setup card and at least 5 user stories
 3. Need assistance / figure things out
-- 
+-
+
+2024/09/14 Amine
+1. Done since last scrum
+- update the database structure
+- host the database on teh cloud 
+2. Plan until next Scrum
+- Set up AWS S3 bucket Storage
+- Create Registration html(Thymeleaf) page
+3. Need assistance / figure things out
+- how to use S3
+
+2024/09/14 Sean
+1. Done since last scrum
+- Update proposal based on teacher's feedback, then submit it
+- Set up Trello Board with Project setup card and at least 5 user stories
+2. Plan until next Scrum
+- Set up a project in IntelliJ with the necessary dependencies, upload it to git so we have the same setup
+- Create login HTML(Thymeleaf) page
+3. Need assistance / figure things out
+- Research JWT and whether we want to implement it
+- Research Stripe API
