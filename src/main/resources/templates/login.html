@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+<!--    TODO We could have bootstrap as a package in our project?-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Login to Todos</title>
+</head>
+<body>
+
+<!--TODO Greets user based on if they're logged in-->
+<!--<div>-->
+<!--    <span sec:authorize="isAnonymous()">-->
+<!--        Welcome! You're in the right place.-->
+<!--    </span>-->
+<!--    <span sec:authorize="isAuthenticated()">-->
+<!--        Welcome, <span sec:authentication="name">-->
+<!--    </span>! You're already logged in.-->
+<!--        <a th:href="@{/logout}" class="btn btn-danger p-2">Logout</a>-->
+<!--        <a th:href="@{/}" class="btn btn-primary p-2">Browse front page of products</a>-->
+<!--    </span>-->
+<!--</div>-->
+
+<!--This is for flash messages-->
+<div th:if="${message}" class="alert alert-success">
+    <p th:text="${message}"></p>
+</div>
+
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<div class="container">
+    <form th:action="@{/login}" method="post">
+        <div><label> User Name : <input type="text" name="username" class="form-control col-4 mb-4"/> </label></div>
+        <div><label> Password: <input type="password" name="password" class="form-control col-4 mb-4"/> </label></div>
+        <div><input type="submit" value="Log In"/></div>
+    </form>
+    <a th:href="@{/register}">Are you new to the site? Create your account today!</a>
+</div>
+</body>
+</html>
