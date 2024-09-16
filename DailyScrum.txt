@@ -14,7 +14,8 @@
 - Update proposal based on teacher's feedback, then submit it
 - Set up Trello Board with Project setup card and at least 5 user stories
 3. Need assistance / figure things out
--
+
+*****
 
 2024/09/14 Amine
 1. Done since last scrum
@@ -36,3 +37,27 @@
 3. Need assistance / figure things out
 - Research JWT and whether we want to implement it
 - Research Stripe API
+
+*****
+
+2024/09/16 Amine
+1. Done since last scrum
+- handle the user registration
+- set up AWS S3 bucket Storage
+- handle the connection between S3 and Spring Boot
+2. Plan until next Scrum
+- set up Spring Security
+- CRUD operations for seller
+3. Need assistance / figure things out
+- hwo to configure roles inside Spring Security
+
+2024/09/16 Sean
+1. Done since last scrum
+- Set up a project in IntelliJ with the necessary dependencies
+- Created login HTML(Thymeleaf) page
+- Created index and single-product html pages, set up product class, repo, controller and had dummy data flowing to html
+2. Plan until next Scrum
+- Set up API endpoints for uploading pictures to S3
+- Set up main admin dashboard url
+3. Need assistance / figure things out
+- How to easily reference the img url sent back by API to store in DB
