@@ -9,6 +9,7 @@ target/
 
 # Log files
 *.log
+*.log.gz
 
 ### STS ###
 .apt_generated
