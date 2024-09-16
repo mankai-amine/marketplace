@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     // TODO Figure out which of these we need as we develop the app
-    // FIXIT These may also need to have a second parameter for isDeleted
+    // FIXME These may also need to have a second parameter for isDeleted
     // TODO research Pageable
 //    List<Product> findByName(String productName);
 //
