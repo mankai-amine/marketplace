@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.styd.store.entity.User;
 import org.styd.store.repository.UserRepository;
+import org.styd.store.securingweb.CustomUserDetails;
 import org.styd.store.service.UserService;
 
 
@@ -65,25 +66,26 @@ public class UserController {
     }
 
     @PostMapping("/users/{userId}/uploadProfilePicture")
-    public String uploadProfilePicture(@RequestParam("file") MultipartFile file, @PathVariable Long userId,
-                                       BindingResult result, RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()){
-            redirectAttributes.addFlashAttribute("message", "An error occurred.");
+    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file,
+                                       RedirectAttributes redirectAttributes) {
+        if (file.isEmpty()){
+            redirectAttributes.addFlashAttribute("message", "Please upload a file and try again.");
             return "redirect:/";
         }
         userService.uploadUserProfilePicture(file, userId);
-        return "redirect:/users/" + userId;
+        redirectAttributes.addFlashAttribute("message", "Profile picture uploaded successfully.");
+        return "redirect:/";
     }
 
     @GetMapping("/users/uploadimgform")
-    public String uploadImgForm(){
+    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model){
 //        if (result.hasErrors()){
 //            redirectAttributes.addFlashAttribute("message", "An error occurred.");
 //            return "redirect:/";
 //        }
 //        user = currentUser;
-//        System.out.println("Banana" + currentUser);
-//        model.addAttribute("user", currentUser);
+        System.out.println("Banana" + currentUser.getUser());
+        model.addAttribute("user", currentUser.getUser());
         return "user-image-upload";
     }
 
