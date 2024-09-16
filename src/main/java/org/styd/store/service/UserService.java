@@ -16,6 +16,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public void uploadUserProfilePicture(MultipartFile file, Long userId) {
+
         String directory = "users/" + userId + "/";
         String fileUrl = s3Service.uploadFile(file, directory);
 

@@ -20,6 +20,7 @@ public class S3Service {
 
     public String uploadFile(MultipartFile file, String directory) {
         // Create in S3 the file name
+        // FIXME: UUID in case the same user chooses the same picture name twice
         String fileName = directory + file.getOriginalFilename();
 
         try {
