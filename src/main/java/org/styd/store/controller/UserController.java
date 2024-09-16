@@ -8,9 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.styd.store.entity.User;
 import org.styd.store.repository.UserRepository;
+import org.styd.store.service.UserService;
 
 
 @Slf4j
@@ -19,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/register")
     public String viewRegisterPage(Model model){
@@ -56,6 +63,12 @@ public class UserController {
         userRepo.save(user);
 
         return "register-success";
+    }
+
+    @PostMapping("/users/{userId}/uploadProfilePicture")
+    public String uploadProfilePicture(@RequestParam("file") MultipartFile file, @PathVariable Long userId) {
+        userService.uploadUserProfilePicture(file, userId);
+        return "redirect:/users/" + userId;
     }
 
 }
