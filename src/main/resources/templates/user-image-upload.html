@@ -3,8 +3,7 @@
 <head th:replace="fragments/head :: head('User Image Upload')"></head>
 
 <body class="d-flex align-items-center justify-content-center">
-<form th:action="@{/users/{id}/uploadProfilePicture(id=${user.id})}" method="post" class="form col-3 mx-auto">
-<!--<form th:action="@{/users/1/uploadProfilePicture}" method="post" enctype="multipart/form-data" class="form col-3 mx-auto">-->
+<form th:action="@{/users/{id}/uploadProfilePicture(id=${user.id})}" enctype="multipart/form-data" method="post" class="form col-3 mx-auto">
     <input type="file" id="file" name="file">
     <button type="submit">Upload Image</button>
 </form>

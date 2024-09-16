@@ -72,18 +72,24 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "Please upload a file and try again.");
             return "redirect:/";
         }
-        userService.uploadUserProfilePicture(file, userId);
-        redirectAttributes.addFlashAttribute("message", "Profile picture uploaded successfully.");
+        try {
+            userService.uploadUserProfilePicture(file, userId);
+            redirectAttributes.addFlashAttribute("message", "Profile picture uploaded successfully.");
+//             FIXME more precise exception handling?
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "An error occurred while uploading profile picture.");
+        }
+
         return "redirect:/";
     }
 
     @GetMapping("/users/uploadimgform")
-    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model){
-//        if (result.hasErrors()){
-//            redirectAttributes.addFlashAttribute("message", "An error occurred.");
-//            return "redirect:/";
-//        }
-//        user = currentUser;
+    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model,
+                                RedirectAttributes redirectAttributes){
+        if (currentUser.getUser() == null){
+            redirectAttributes.addFlashAttribute("message", "An error occurred.");
+            return "redirect:/";
+        }
         System.out.println("Banana" + currentUser.getUser());
         model.addAttribute("user", currentUser.getUser());
         return "user-image-upload";
