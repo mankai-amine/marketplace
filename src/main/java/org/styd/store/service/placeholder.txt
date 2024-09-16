@@ -1,2 +1,0 @@
-// to create git folder structure
-// delete me :)
