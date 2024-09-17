@@ -99,13 +99,13 @@ public class ProductController {
         return "index";
     }
 
-    @GetMapping({"/product/add"})
+    @GetMapping({"/seller/add"})
     public String addProduct(Model model){
         model.addAttribute("product", new Product());
         return "add-product";
     }
 
-    @GetMapping({"/product/edit/{prodId}"})
+    @GetMapping({"/seller/edit/{prodId}"})
     public String editProduct(Model model, @PathVariable Long prodId){
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
@@ -115,14 +115,14 @@ public class ProductController {
         return "add-product";
     }
 
-    @GetMapping("/product/delete/{prodId}")
+    @GetMapping("/seller/delete/{prodId}")
     public String delete(@PathVariable Long prodId, RedirectAttributes redirAttrs){
         productRepository.deleteById(prodId);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
         return "redirect:/seller/products";
     }
 
-    @PostMapping("/product/saveProduct")
+    @PostMapping("/seller/saveProduct")
     public String saveProduct(@Valid Product product, BindingResult result, @RequestParam("file") MultipartFile file,
                               Principal principal, RedirectAttributes redirAttrs){
 
