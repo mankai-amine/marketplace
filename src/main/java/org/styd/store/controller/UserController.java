@@ -96,4 +96,23 @@ public class UserController {
         return "user-image-upload";
     }
 
+    @GetMapping("/admin")
+    public String adminMain(){
+        return "admin-main";
+    }
+
+    @GetMapping("/admin/categories")
+    public String adminCategories(){
+        return "admin-categories";
+    }
+
+    @GetMapping("/admin/users")
+    public String adminUsers(){
+        return "admin-users";
+    }
+
+    @GetMapping("/admin/orders")
+    public String adminOrders(){
+        return "admin-orders";
+    }
 }
