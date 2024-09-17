@@ -1,12 +1,12 @@
 package org.styd.store.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -21,13 +21,14 @@ public class S3Service {
 
     public String uploadFile(MultipartFile file, String directory) {
         // Create in S3 the file name
-        // FIXME: UUID in case the same user chooses the same picture name twice
         String uniqueName = UUID.randomUUID().toString();
         String fileName = directory + uniqueName;
 
+
         try {
             // Upload the file to S3
-            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), null));
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), null)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
 
             // return the file URL
             return amazonS3.getUrl(bucketName, fileName).toString();

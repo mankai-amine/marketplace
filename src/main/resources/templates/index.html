@@ -48,7 +48,7 @@
             <td th:text="${product.description}"></td>
             <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
             <td th:if="${product.imageUrl == null}">No image found.</td>
-            <td th:if="${product.imageUrl}">
+            <td th:if="${product.imageUrl != null}">
                 <img th:src="@{${product.imageUrl}}" alt="Product Image" />
             </td>
             <td>

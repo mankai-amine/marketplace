@@ -19,22 +19,13 @@ import org.styd.store.securingweb.CustomUserDetailsService;
 import org.styd.store.service.ProductService;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-//import org.styd.store.service.ProductService;
 
 // TODO review which data members and auto wired fields are necessary
 @Slf4j
 @Controller
 public class ProductController {
-
-//    private final ProductService productService;
-
-//    @Autowired
-//    public ProductController(ProductService productService) {
-//        this.productService = productService;
-//    }
 
 
     @Autowired
@@ -48,28 +39,6 @@ public class ProductController {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
-    // proof of concept. Once we have a db to call products from we won't need this to test
-//    Long idOne = 1L;
-//    Long idTwo = 1L;
-//    Long idThree = 1L;
-//    Long idFour = 2L;
-//    Long idFive = 1L;
-//    Long idSix = 1L;
-//    Long idSeven = 3L;
-//    Long idEight = 1L;
-//    Long idNine = 1L;
-//    Product testProduct1 = new Product(idOne, idTwo, idThree, "Trombone", "Trombones are the best",
-//            100.15, 1, null, false);
-//    Product testProduct2 = new Product(idFour, idFive, idSix, "Bananas", "Bananas are delicious and full of potassium",
-//            3.50, 5, null, false);
-//    Product testProduct3 = new Product(idSeven, idEight, idNine, "Cat litter", "Because you love Sir Reginald Napsalot III so much",
-//            50.0, 2, null, false);
-//    List<Product> listOfProducts = new ArrayList<>(){{
-//        add(testProduct1);
-//        add(testProduct2);
-//        add(testProduct3);
-//    }};
 
     @GetMapping("/")
     public String viewIndex(Model model) {
@@ -113,6 +82,7 @@ public class ProductController {
     @GetMapping({"/seller/add"})
     public String addProduct(Model model){
         model.addAttribute("product", new Product());
+
         return "add-product";
     }
 
@@ -123,6 +93,7 @@ public class ProductController {
             return "redirect:/seller/products";
         }
         model.addAttribute("product", product);
+
         return "add-product";
     }
 
@@ -130,7 +101,7 @@ public class ProductController {
     public String delete(@PathVariable Long prodId, RedirectAttributes redirAttrs){
         productRepository.deleteById(prodId);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
-        return "redirect:/seller/products";
+        return "redirect:/";
     }
 
     @PostMapping("/seller/saveProduct")
@@ -146,19 +117,19 @@ public class ProductController {
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
-//        // upload the product image
-//        productService.uploadProductImage(file, product.getId());
-//        // get the image URL from the database
-//        product.setImageUrl(product.getImageUrl());
-
-        // dummy data to test the controller
-        product.setImageUrl("test-url");
+        try {
+            String fileUrl = productService.uploadProductImage(file, product.getId());
+            product.setImageUrl(fileUrl);
+            redirAttrs.addFlashAttribute("message", "Product image uploaded successfully.");
+        } catch (Exception e) {
+            redirAttrs.addFlashAttribute("message", "An error occurred while uploading prodcut image.");
+        }
 
         productRepository.save(product);
 
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product saved successfully");
 
-        return "redirect:/seller/products";
+        return "redirect:/";
     }
 
     // check if the authenticated user has the same id as sellerId in the URL

@@ -26,16 +26,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(user);
     }
 
-    public String getCurrentUserRole() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && !authentication.getAuthorities().isEmpty()) {
-            GrantedAuthority authority = authentication.getAuthorities().iterator().next();
-            return authority.getAuthority();  // "ROLE_BUYER", "ROLE_SELLER", "ROLE_ADMIN"
-        }
-
-        return null;
-    }
+//    public String getCurrentUserRole() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication != null && !authentication.getAuthorities().isEmpty()) {
+//            GrantedAuthority authority = authentication.getAuthorities().iterator().next();
+//            return authority.getAuthority();  // "ROLE_BUYER", "ROLE_SELLER", "ROLE_ADMIN"
+//        }
+//
+//        return null;
+//    }
 
     public Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
