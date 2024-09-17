@@ -2,6 +2,7 @@ package org.styd.store.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -91,7 +92,9 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "An error occurred.");
             return "redirect:/";
         }
-        model.addAttribute("user", currentUser.getUser());
+        User user = userRepo.findById(currentUser.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        model.addAttribute("user", user);
         return "user-image-upload";
     }
 

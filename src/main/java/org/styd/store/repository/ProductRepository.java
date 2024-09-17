@@ -11,6 +11,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // TODO Figure out which of these we need as we develop the app
     // FIXME These may also need to have a second parameter for isDeleted
     // TODO research Pageable
+
+    Product findProductById(Long id);
+
+    List<Product> findBySellerId(Long sellerId);
+
 //    List<Product> findByName(String productName);
 //
 //    List<Product> findByNameContaining(String productName);
