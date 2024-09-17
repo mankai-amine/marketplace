@@ -67,8 +67,12 @@ public class UserController {
     }
 
     @PostMapping("/users/{userId}/uploadProfilePicture")
-    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file,
+    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser,
                                        RedirectAttributes redirectAttributes) {
+        if (!currentUser.getUser().getId().equals(userId)) {
+            redirectAttributes.addFlashAttribute("message", "ID mismatch error.");
+            return "redirect:/";
+        }
         if (file.isEmpty()){
             redirectAttributes.addFlashAttribute("message", "Please upload a file and try again.");
             return "redirect:/";
@@ -92,9 +96,13 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "An error occurred.");
             return "redirect:/";
         }
-        User user = userRepo.findById(currentUser.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        model.addAttribute("user", user);
+
+        // Temporary solution around product LazyRetrieval error, keeping in case it's needed again
+//        User user = userRepo.findById(currentUser.getUser().getId())
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Below code works again with the User class declaring a new empty HashSet<> for products when initialized
+        model.addAttribute("user", currentUser.getUser());
         return "user-image-upload";
     }
 

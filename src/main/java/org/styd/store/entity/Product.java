@@ -19,12 +19,12 @@ public class Product {
     private Long id;
 
     // FIXME @JoinColumn ONETOONE
-    @NotBlank
-    private Long categoryId;
+//    @NotBlank
+//    private Long categoryId;
 
-    // FIXME @JOINCOLUMN
-    @NotBlank
-    private Long sellerId;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category prodCategory;
 
     @NotBlank
     @Size(min = 4, max = 255, message="Product name must be between {min} and {max} characters")

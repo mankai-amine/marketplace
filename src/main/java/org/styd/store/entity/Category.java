@@ -16,7 +16,6 @@ import java.util.Set;
 @Table(name = "categories")
 public class Category {
 
-    @JoinColumn(name = "category_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +26,6 @@ public class Category {
     private Boolean isDeleted;
 
     //FIXME eager or lazy? Hashset needed? TEST
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    private Set<Product> products = new HashSet<>();
+    @OneToMany(mappedBy = "prodCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> products = new HashSet<>();
 }
