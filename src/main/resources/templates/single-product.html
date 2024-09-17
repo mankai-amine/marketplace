@@ -33,8 +33,10 @@
         </tbody>
     </table>
     <a th:href="@{/}" class="btn btn-info">Back to All Products</a>
-    <a th:href="@{/seller/products}" class="btn btn-info">Back to All Products</a>
-</div>
 
+    <span th:if="${isSellerEqualUser}">
+        <a th:href="@{/seller/{sellerId}/products(sellerId=${sellerId})}" class="btn btn-info">Back to Your Products</a>
+    </span>
+</div>
 </body>
 </html>
