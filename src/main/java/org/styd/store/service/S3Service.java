@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class S3Service {
@@ -21,7 +22,8 @@ public class S3Service {
     public String uploadFile(MultipartFile file, String directory) {
         // Create in S3 the file name
         // FIXME: UUID in case the same user chooses the same picture name twice
-        String fileName = directory + file.getOriginalFilename();
+        String uniqueName = UUID.randomUUID().toString();
+        String fileName = directory + uniqueName;
 
         try {
             // Upload the file to S3
