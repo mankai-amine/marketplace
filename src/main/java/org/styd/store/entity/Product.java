@@ -18,11 +18,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FIXIT @JoinColumn
+    // FIXME @JoinColumn ONETOONE
     @NotBlank
     private Long categoryId;
 
-    // FIXIT @JoinColumn
+    // FIXME @JOINCOLUMN
     @NotBlank
     private Long sellerId;
 
