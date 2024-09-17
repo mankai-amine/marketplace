@@ -22,9 +22,12 @@
     <p th:text="${message}"></p>
 </div>
 
-<h1>Products</h1>
 
 <div class="container">
+    <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">
+        <a th:href="@{/product/add}" class="btn btn-info">Add a product</a>
+    </div>
+
     <h1>List of Products</h1>
     <table class="table table-bordered table-striped" id="productTable">
         <thead>
@@ -36,14 +39,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product: ${products}">
+        <tr th:each="product: ${products}" th:if="${product.stockAmount > 0}">
             <td th:text="${product.name}"></td>
             <td th:text="${product.description}"></td>
             <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
             <td th:if="${product.imageUrl == null}">No image found.</td>
-            <td th:if="${product.imageUrl}">Image here!</td>
+            <td th:if="${product.imageUrl}">
+                <img th:src="@{${product.imageUrl}}" alt="Product Image" />
+            </td>
             <td>
-                <a th:href="@{/product/{id}(id=${product.id})}" class="btn btn-info">View this Product</a>
+                <a th:href="@{/product/{id}(id=${product.id})}" class="btn btn-info">View</a>
+                <span th:if="${isSellerEqualUser}">
+                    <a th:href="@{/product/edit/{id}(id=${product.id})}" class="btn btn-info">Edit</a>
+                    <a th:href="@{/product/delete/{id}(id=${product.id})}" class="btn btn-info ml-2">Delete</a>
+                </span>
             </td>
         </tr>
         </tbody>

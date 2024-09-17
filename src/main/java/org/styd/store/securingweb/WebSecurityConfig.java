@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/", "/register", "/process_register").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/buyer/**").hasRole("BUYER")
-                        .requestMatchers("/seller/**").hasRole("SELLER")
+                        .requestMatchers("/seller/**", "/product/**").hasRole("SELLER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login ->
