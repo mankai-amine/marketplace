@@ -83,6 +83,7 @@ public class UserController {
         return "redirect:/";
     }
 
+    // FIXME Turn this into a settings page later
     @GetMapping("/users/uploadimgform")
     public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model,
                                 RedirectAttributes redirectAttributes){
