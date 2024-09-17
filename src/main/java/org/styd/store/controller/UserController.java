@@ -91,7 +91,6 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", "An error occurred.");
             return "redirect:/";
         }
-        System.out.println("Banana" + currentUser.getUser());
         model.addAttribute("user", currentUser.getUser());
         return "user-image-upload";
     }
