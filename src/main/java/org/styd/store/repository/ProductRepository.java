@@ -27,5 +27,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //    List<Product> findByCategoryId(Long categoryId);
 //
 //    List<Product> findAllDeletedProducts();
-        // FIXIT custom code to only search for isDeleted
+        // FIXME custom code to only search for isDeleted
 }

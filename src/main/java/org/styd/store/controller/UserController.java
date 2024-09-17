@@ -3,17 +3,17 @@ package org.styd.store.controller;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.styd.store.entity.User;
 import org.styd.store.repository.UserRepository;
+import org.styd.store.securingweb.CustomUserDetails;
 import org.styd.store.service.UserService;
 
 
@@ -66,9 +66,34 @@ public class UserController {
     }
 
     @PostMapping("/users/{userId}/uploadProfilePicture")
-    public String uploadProfilePicture(@RequestParam("file") MultipartFile file, @PathVariable Long userId) {
-        userService.uploadUserProfilePicture(file, userId);
-        return "redirect:/users/" + userId;
+    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file,
+                                       RedirectAttributes redirectAttributes) {
+        if (file.isEmpty()){
+            redirectAttributes.addFlashAttribute("message", "Please upload a file and try again.");
+            return "redirect:/";
+        }
+        try {
+            userService.uploadUserProfilePicture(file, userId);
+            redirectAttributes.addFlashAttribute("message", "Profile picture uploaded successfully.");
+//             FIXME more precise exception handling?
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "An error occurred while uploading profile picture.");
+        }
+
+        return "redirect:/";
+    }
+
+    // FIXME Turn this into a settings page later
+    @GetMapping("/users/uploadimgform")
+    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model,
+                                RedirectAttributes redirectAttributes){
+        if (currentUser.getUser() == null){
+            redirectAttributes.addFlashAttribute("message", "An error occurred.");
+            return "redirect:/";
+        }
+        System.out.println("Banana" + currentUser.getUser());
+        model.addAttribute("user", currentUser.getUser());
+        return "user-image-upload";
     }
 
 }

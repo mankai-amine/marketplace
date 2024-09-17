@@ -39,6 +39,8 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/", "/register", "/process_register").permitAll()
+                        .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/", "/register", "/process_register").permitAll() // /product/{prodId}
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/buyer/**").hasRole("BUYER")
