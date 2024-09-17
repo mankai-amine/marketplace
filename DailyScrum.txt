@@ -49,7 +49,7 @@
 - set up Spring Security
 - CRUD operations for seller
 3. Need assistance / figure things out
-- hwo to configure roles inside Spring Security
+- how to configure roles inside Spring Security
 
 2024/09/16 Sean
 1. Done since last scrum
@@ -61,3 +61,24 @@
 - Set up main admin dashboard url
 3. Need assistance / figure things out
 - How to easily reference the img url sent back by API to store in DB
+
+2024/09/17 Amine
+1. Done since last scrum
+- set up Spring Security
+- CRUD operations for seller
+2. Plan until next Scrum
+- API backend for uploading product picture
+- Users can edit their information
+
+3. Need assistance / figure things out
+- 
+
+2024/09/17 Sean
+1. Done since last scrum
+- Created html page and configured upload url for user images + UUID
+- Set up main admin url and links to other admin pages
+2. Plan until next Scrum
+- Set up admin Categories page to allow us to do CRUD on categories in-app without directly inserting to db
+- Set up admin user view/edit pages and CRUD
+3. Need assistance / figure things out
+- Start looking into Cart and checkout for future workdays
