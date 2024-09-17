@@ -116,6 +116,11 @@ public class UserController {
         return "admin-categories";
     }
 
+    @GetMapping("/admin/categories/add")
+    public String adminCategoriesAdd(){
+        return "admin-categories-add";
+    }
+
     @GetMapping("/admin/users")
     public String adminUsers(){
         return "admin-users";
