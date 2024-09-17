@@ -19,12 +19,8 @@ public class Product {
     private Long id;
 
     // FIXIT @JoinColumn
-    @NotBlank
+    @Column(name = "category_id")
     private Long categoryId;
-
-    // FIXIT @JoinColumn
-    @NotBlank
-    private Long sellerId;
 
     @NotBlank
     @Size(min = 4, max = 255, message="Product name must be between {min} and {max} characters")
@@ -34,20 +30,22 @@ public class Product {
     @Size(min = 10, max = 255, message="Product description must be between {min} and {max} characters")
     private String description;
 
-    @NotBlank(message = "Price is required.")
+    //@NotBlank(message = "Price is required.")
     private Double price;
 
-    @NotBlank(message = "Amount of stock is required.")
-    private Integer stockAmount;
+    @Column(name = "stock_amount")
+    private int stockAmount;
 
     // FIXIT @Default here?
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    // @JoinColumn(name = "user_id", nullable=false)
-    // private User seller;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "seller_id", nullable=false)
+    private User seller;
 
     // TODO maybe don't want this here, since orderItems is a snapshot.
     // @OneToMany(...)
