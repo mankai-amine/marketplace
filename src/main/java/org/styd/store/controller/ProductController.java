@@ -57,6 +57,8 @@ public class ProductController {
 
         Long sellerId = product.getSeller().getId();
         model.addAttribute("sellerId", sellerId);
+        
+        model.addAttribute("imageUrl", product.getImageUrl());
 
         boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
         model.addAttribute("isSellerEqualUser", isSellerEqualUser);
