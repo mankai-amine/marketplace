@@ -17,7 +17,8 @@
                 <option value="" disabled selected>Select a category</option>
                 <option th:each="category : ${categories}"
                         th:value="${category.id}"
-                        th:text="${category.name}"></option>
+                        th:text="${category.name}">
+                </option>
             </select>
             <div class="alert alert-warning" th:if="${#fields.hasErrors('prodCategory')}" th:errors="*{prodCategory}"></div>
 

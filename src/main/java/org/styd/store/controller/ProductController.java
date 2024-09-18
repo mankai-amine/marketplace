@@ -62,8 +62,6 @@ public class ProductController {
         Long sellerId = product.getSeller().getId();
         model.addAttribute("sellerId", sellerId);
 
-        //model.addAttribute("imageUrl", product.getImageUrl());
-
         boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
         model.addAttribute("isSellerEqualUser", isSellerEqualUser);
 
@@ -89,38 +87,58 @@ public class ProductController {
     public String addProduct(Model model){
         model.addAttribute("product", new Product());
 
+        model.addAttribute("categories", categoryRepository.findAll());
+
         return "add-product";
     }
 
     @GetMapping({"/seller/edit/{prodId}"})
-    public String editProduct(Model model, @PathVariable Long prodId){
+    public String editProduct(Model model, @PathVariable Long prodId, Principal principal){
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
-            return "redirect:/seller/products";
+            return "redirect:/";
         }
         model.addAttribute("product", product.get());
 
         model.addAttribute("categories", categoryRepository.findAll());
 
-//        Long categoryId = product.get().getProdCategory().getId();
-//        model.addAttribute("categoryId", categoryId);
+        // if a seller tries to edit another seller's product
+        Long sellerId = product.get().getSeller().getId();
+        boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
+        if(!isSellerEqualUser){
+            return "redirect:/";
+        }
 
         return "add-product";
     }
 
     @GetMapping("/seller/delete/{prodId}")
-    public String delete(@PathVariable Long prodId, RedirectAttributes redirAttrs){
+    public String delete(@PathVariable Long prodId, RedirectAttributes redirAttrs, Principal principal){
+
+        // if a seller tries to delete another seller's product
+        Optional<Product> product = productRepository.findById(prodId);
+        if (product.isEmpty()) {
+            return "redirect:/";
+        }
+        Long sellerId = product.get().getSeller().getId();
+        boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
+        if(!isSellerEqualUser){
+            return "redirect:/";
+        }
+
         productRepository.deleteById(prodId);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
+
         return "redirect:/";
     }
 
     @PostMapping("/seller/saveProduct")
     public String saveProduct(@Valid Product product, BindingResult result, @RequestParam("file") MultipartFile file,
-                              Principal principal, RedirectAttributes redirAttrs){
+                              Principal principal, Model model, RedirectAttributes redirAttrs){
 
         if (result.hasErrors()) {
             log.debug(String.valueOf(result));
+            model.addAttribute("categories", categoryRepository.findAll());
             return "add-product";
         }
 
