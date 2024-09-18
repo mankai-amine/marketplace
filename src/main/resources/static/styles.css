@@ -1,0 +1,8 @@
+.enable-edit {
+    cursor: pointer;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 4px 8px;
+    margin-left: 8px;
+    border-radius: 4px;
+}
