@@ -62,6 +62,8 @@
 3. Need assistance / figure things out
 - How to easily reference the img url sent back by API to store in DB
 
+*****
+
 2024/09/17 Amine
 1. Done since last scrum
 - set up Spring Security
@@ -82,3 +84,26 @@
 - Set up admin user view/edit pages and CRUD
 3. Need assistance / figure things out
 - Start looking into Cart and checkout for future workdays
+
+*****
+
+2024/09/18 Amine
+1. Done since last scrum
+- Solved all bugs related to Product and Seller
+- API backend for uploading product picture
+2. Plan until next Scrum
+- Users can edit their information
+- Integrate Category into Product (if Category is ready)
+3. Need assistance / figure things out
+- 
+
+2024/09/18 Sean
+1. Done since last scrum
+- Admin Categories page with CRUD
+- Created Category class and repository
+2. Plan until next Scrum
+- Set up admin user view/edit pages and CRUD
+- Move onto new tasks once current functionality is stable
+3. Need assistance / figure things out
+- Start looking into Cart and checkout for future workdays
+
