@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.styd.store.entity.Product;
 import org.styd.store.entity.User;
+import org.styd.store.repository.CategoryRepository;
 import org.styd.store.repository.ProductRepository;
 import org.styd.store.repository.UserRepository;
 import org.styd.store.securingweb.CustomUserDetailsService;
@@ -33,6 +34,9 @@ public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ProductService productService;
@@ -95,6 +99,8 @@ public class ProductController {
             return "redirect:/seller/products";
         }
         model.addAttribute("product", product.get());
+
+        model.addAttribute("categories", categoryRepository.findAll());
 
 //        Long categoryId = product.get().getProdCategory().getId();
 //        model.addAttribute("categoryId", categoryId);
