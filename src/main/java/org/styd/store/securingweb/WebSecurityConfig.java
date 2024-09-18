@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                 )
                 .formLogin(login ->
                         login.usernameParameter("username")
-                                .defaultSuccessUrl("/")
+                                .defaultSuccessUrl("/", true)
                                 .permitAll()
                 )
                 .logout(logout ->
