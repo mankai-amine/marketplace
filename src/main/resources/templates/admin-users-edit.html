@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Edit User')}"></head>
+<body>
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Edit User</h5>
+    </div>
+    <div class="card-body">
+        <form th:action="@{/admin/users/edit/{id}(id=${user.id})}" method="post" th:object="${user}">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit User</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

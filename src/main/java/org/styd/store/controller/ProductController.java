@@ -142,6 +142,7 @@ public class ProductController {
             return "add-product";
         }
 
+        // FIXME check user id instead of username
         // Custom validation to avoid malicious user doing html edits on hidden id field
         String username = principal.getName();
         if (product.getId() != null) {

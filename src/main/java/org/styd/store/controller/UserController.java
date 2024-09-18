@@ -139,7 +139,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when creating category.");
             return "admin-categories-add";
         }
-        if (categoryRepo.findByName(category.getName()) != null){
+        if (categoryRepo.findByName(category.getName()).isPresent()){
             redirectAttributes.addFlashAttribute("flashMessageError", "Category already exists.");
             return "admin-categories-add";
         }
@@ -168,9 +168,14 @@ public class UserController {
             redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when updating category.");
             return "admin-categories-edit";
         }
-        Optional<Category> optionalCategory = categoryRepo.findById(category.getId());
-        if (optionalCategory.isPresent()){
-            Category toEdit = optionalCategory.get();
+        Optional<Category> checkId = categoryRepo.findById(category.getId());
+        if (checkId.isPresent()){
+            Optional<Category> checkName = categoryRepo.findByName(category.getName());
+            if (checkName.isPresent() && !checkId.get().getId().equals(checkName.get().getId())){
+                redirectAttributes.addFlashAttribute("flashMessageError", "Category name already exists.");
+                return "admin-categories-edit";
+            }
+            Category toEdit = checkId.get();
             toEdit.setName(category.getName());
             categoryRepo.save(toEdit);
             redirectAttributes.addFlashAttribute("flashMessageSuccess", "Category edited successfully.");
@@ -185,7 +190,7 @@ public class UserController {
     public String categoryDelete(@PathVariable Long id, RedirectAttributes redirectAttributes){
         Optional<Category> toFind = categoryRepo.findById(id);
         if (toFind.isPresent()){
-            // new Category object, DONT DELETE
+            // new Category object, DON'T DELETE
             Category toDelete = toFind.get();
             toDelete.setIsDeleted(true);
             categoryRepo.save(toDelete);
@@ -205,12 +210,13 @@ public class UserController {
             toRestore.setIsDeleted(false);
             categoryRepo.save(toRestore);
             redirectAttributes.addFlashAttribute("flashMessageSuccess", "Category restored successfully.");
-            return "redirect:/admin/categories";
         } else {
             redirectAttributes.addFlashAttribute("flashMessageError", "Category not found.");
-            return "redirect:/admin/categories";
         }
+        return "redirect:/admin/categories";
     }
+
+    // End of Admin Categories
 
     @GetMapping("/admin/users")
     public String adminUsers(Model model){
