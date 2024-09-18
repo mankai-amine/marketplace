@@ -31,7 +31,7 @@
 
         <div class="form-group mb-3">
             <label for="price">Price:</label>
-            <input id="price" class="form-control" type="number" th:field="*{price}">
+            <input id="price" class="form-control" type="number" step=".01" th:field="*{price}">
             <div class="alert alert-warning" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
         </div>
 
