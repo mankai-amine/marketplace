@@ -13,8 +13,8 @@
 
         <div class="form-group mb-3">
             <label for="category">Category</label>
-            <input id="category" class="form-control" type="number" th:field="*{categoryId}">
-            <div class="alert alert-warning" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+            <input id="category" class="form-control" type="number" th:field="*{prodCategory}">
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('prodCategory')}" th:errors="*{prodCategory}"></div>
         </div>
 
         <div class="form-group mb-3">
