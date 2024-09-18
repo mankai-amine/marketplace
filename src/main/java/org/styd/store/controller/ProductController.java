@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.styd.store.entity.Product;
 import org.styd.store.entity.User;
+import org.styd.store.repository.CategoryRepository;
 import org.styd.store.repository.ProductRepository;
 import org.styd.store.repository.UserRepository;
 import org.styd.store.securingweb.CustomUserDetailsService;
@@ -33,6 +34,9 @@ public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ProductService productService;
@@ -83,42 +87,79 @@ public class ProductController {
     public String addProduct(Model model){
         model.addAttribute("product", new Product());
 
+        model.addAttribute("categories", categoryRepository.findAll());
+
         return "add-product";
     }
 
     @GetMapping({"/seller/edit/{prodId}"})
-    public String editProduct(Model model, @PathVariable Long prodId){
+    public String editProduct(Model model, @PathVariable Long prodId, Principal principal){
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
-            return "redirect:/seller/products";
+            return "redirect:/";
         }
-        model.addAttribute("product", product);
+        model.addAttribute("product", product.get());
+
+        model.addAttribute("categories", categoryRepository.findAll());
+
+        // if a seller tries to edit another seller's product
+        Long sellerId = product.get().getSeller().getId();
+        boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
+        if(!isSellerEqualUser){
+            return "redirect:/";
+        }
 
         return "add-product";
     }
 
     @GetMapping("/seller/delete/{prodId}")
-    public String delete(@PathVariable Long prodId, RedirectAttributes redirAttrs){
+    public String delete(@PathVariable Long prodId, RedirectAttributes redirAttrs, Principal principal){
+
+        // if a seller tries to delete another seller's product
+        Optional<Product> product = productRepository.findById(prodId);
+        if (product.isEmpty()) {
+            return "redirect:/";
+        }
+        Long sellerId = product.get().getSeller().getId();
+        boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
+        if(!isSellerEqualUser){
+            return "redirect:/";
+        }
+
         productRepository.deleteById(prodId);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
+
         return "redirect:/";
     }
 
     @PostMapping("/seller/saveProduct")
     public String saveProduct(@Valid Product product, BindingResult result, @RequestParam("file") MultipartFile file,
-                              Principal principal, RedirectAttributes redirAttrs){
+                              Principal principal, Model model, RedirectAttributes redirAttrs){
 
         if (result.hasErrors()) {
             log.debug(String.valueOf(result));
+            model.addAttribute("categories", categoryRepository.findAll());
             return "add-product";
         }
 
+        // Custom validation to avoid malicious user doing html edits on hidden id field
         String username = principal.getName();
+        if (product.getId() != null) {
+            Product toCheck = productRepository.findProductById(product.getId());
+            String toConfirm = toCheck.getSeller().getUsername();
+            if (!toConfirm.equals(username)) {
+                redirAttrs.addFlashAttribute("flashMessageError", "User Mismatch.");
+                return "redirect:/";
+            }
+        }
+
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
-        String fileUrl = productService.uploadProductImage(file, product.getId());
-        product.setImageUrl(fileUrl);
+        if (!file.isEmpty()){
+            String fileUrl = productService.uploadProductImage(file, product.getId());
+            product.setImageUrl(fileUrl);
+        }
 
         productRepository.save(product);
 
