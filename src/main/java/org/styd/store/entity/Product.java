@@ -18,9 +18,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FIXIT @JoinColumn
-    @Column(name = "category_id")
-    private Long categoryId;
+    // FIXME @JoinColumn ONETOONE
+//    @NotBlank
+//    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category prodCategory;
 
     @NotBlank
     @Size(min = 4, max = 255, message="Product name must be between {min} and {max} characters")
@@ -41,7 +45,7 @@ public class Product {
     private String imageUrl;
 
     @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable=false)

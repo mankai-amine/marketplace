@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Admin Category Overview')"></head>
+<body>
+
+<a th:href="@{/admin/categories/add}" class="btn btn-primary mt-auto">Add a new Category</a>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Existing Categories</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+                <th>Category Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.id}"></td>
+                <td th:text="${category.name}"></td>
+                <td>
+                    <a th:href="@{/admin/categories/edit/{id}(id=${category.id})}" class="btn btn-sm btn-warning">Edit</a>
+                    <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this category?')">Delete</button>
+                    </form>
+                </td>
+                <td th:text="${category.isDeleted}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

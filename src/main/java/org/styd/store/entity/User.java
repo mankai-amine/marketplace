@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -34,10 +35,10 @@ public class User {
     @Pattern(regexp = "^[a-z0-9]+$", message = "Username must only consist of lower case letters and numbers")
     private String username;
 
+    @Email
     @NotBlank(message="Email is required")
     @Column(unique = true, length = 230)
     private String email;
-
 
     @NotBlank(message="Password is required")
     @Size(min = 6, max = 100, message= "Password must contain between {min} and {max} characters")
@@ -62,9 +63,10 @@ public class User {
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private Set<CartItem> cartItems;
-//
+
+//  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Product> products;
+    private Set<Product> products = new HashSet<>();
 
 
 
