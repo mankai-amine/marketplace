@@ -168,6 +168,8 @@ public class ProductController {
         return "redirect:/";
     }
 
+
+
     // check if the authenticated user has the same id as sellerId in the URL
     // this will grant him the possibility to modify and delete that specific list of products
     private boolean checkSellerEqualUser(Principal principal, Long sellerId) {

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Settings')"></head>
+
+
+<body class="d-flex align-items-center justify-content-center">
+
+<div class="container my-5">
+
+    <form th:action="@{/users/settings}" th:object="${user}" method="post" class="form col-5 mx-auto" enctype="multipart/form-data">
+
+        <h3 class="text-center mb-3" th:text="'Welcome to your settings, ' + ${user.username}"></h3>
+
+
+        <div class="form-group mb-3">
+            <label for="email">Email</label>
+            <input id="email" class="form-control" type="text" th:field="*{email}" disabled>
+            <button>Edit</button>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="password">Password:</label>
+            <input id="password" class="form-control" type="password" th:field="*{password}">
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="address">Address:</label>
+            <input id="address" class="form-control" type="text" th:field="*{address}">
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="creditCard">Credit card:</label>
+            <input id="creditCard" class="form-control" type="number" th:field="*{creditCard}">
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('creditCard')}" th:errors="*{creditCard}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="profilePicture">Upload Profile Picture:</label>
+            <input type="hidden" th:field="*{picture}" >
+            <input type="file" id="profilePicture" name="file">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+
+        <input type="hidden" th:field="*{id}"/>
+
+    </form>
+    <hr/>
+    <a th:href="@{/}">Back to home page</a>
+</div>
+</body>
+</html>

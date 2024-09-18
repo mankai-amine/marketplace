@@ -19,6 +19,7 @@ import org.styd.store.repository.UserRepository;
 import org.styd.store.securingweb.CustomUserDetails;
 import org.styd.store.service.UserService;
 
+import java.security.Principal;
 import java.util.Optional;
 
 
@@ -34,6 +35,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/register")
     public String viewRegisterPage(Model model){
@@ -71,6 +74,28 @@ public class UserController {
         userRepo.save(user);
 
         return "register-success";
+    }
+
+    @GetMapping("/users/settings")
+    public String settings(Principal principal, Model model) {
+        String username = principal.getName();
+        User currentUser = userRepo.findByUsername(username);
+        model.addAttribute("user", currentUser);
+        return "user-settings";
+    }
+
+    @PostMapping("users/settings" )
+    public String saveSettings(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
+        if (result.hasErrors()) {
+            log.debug(String.valueOf(result));
+            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when saving settings.");
+            return "user-settings";
+        }
+
+        userRepository.save(user);
+        redirectAttributes.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
+
+        return "redirect:/";
     }
 
     // FIXME Turn this into a settings page later
