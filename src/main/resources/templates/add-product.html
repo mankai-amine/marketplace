@@ -13,8 +13,15 @@
 
         <div class="form-group mb-3">
             <label for="category">Category</label>
-            <input id="category" class="form-control" type="number" th:field="*{prodCategory}">
+            <select id="category" class="form-control" th:field="*{prodCategory.id}">
+                <option value="" disabled selected>Select a category</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}">
+                </option>
+            </select>
             <div class="alert alert-warning" th:if="${#fields.hasErrors('prodCategory')}" th:errors="*{prodCategory}"></div>
+
         </div>
 
         <div class="form-group mb-3">
@@ -43,6 +50,7 @@
 
         <div class="form-group mb-3">
             <label for="productImage">Upload Image of the product:</label>
+            <input type="hidden" th:field="*{imageUrl}" >
             <input type="file" id="productImage" name="file">
         </div>
 
