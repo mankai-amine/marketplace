@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Product {
 
     @Id
@@ -21,10 +22,6 @@ public class Product {
     // FIXME @JoinColumn ONETOONE
 //    @NotBlank
 //    private Long categoryId;
-
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category prodCategory;
 
     @NotBlank
     @Size(min = 4, max = 255, message="Product name must be between {min} and {max} characters")
@@ -46,6 +43,10 @@ public class Product {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category prodCategory;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable=false)
