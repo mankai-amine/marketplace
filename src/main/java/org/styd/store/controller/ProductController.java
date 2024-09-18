@@ -128,8 +128,10 @@ public class ProductController {
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
-        String fileUrl = productService.uploadProductImage(file, product.getId());
-        product.setImageUrl(fileUrl);
+        if (!file.isEmpty()){
+            String fileUrl = productService.uploadProductImage(file, product.getId());
+            product.setImageUrl(fileUrl);
+        }
 
         productRepository.save(product);
 
