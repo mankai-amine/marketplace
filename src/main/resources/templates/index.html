@@ -26,7 +26,10 @@
 
 <div class="container">
     <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">
-        <a th:href="@{/seller/add}" class="btn btn-info">Add a product</a>
+        <span th:if="${isSellerEqualUser}">
+            <a th:href="@{/seller/add}" class="btn btn-info">Add a product</a>
+        </span>
+        <a th:href="@{/seller/{currentUserId}/products(currentUserId=${currentUserId})}" class="btn btn-info">View Your Products</a>
     </div>
 
     <h1>List of Products</h1>
@@ -45,7 +48,7 @@
             <td th:text="${product.description}"></td>
             <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
             <td th:if="${product.imageUrl == null}">No image found.</td>
-            <td th:if="${product.imageUrl}">
+            <td th:if="${product.imageUrl != null}">
                 <img th:src="@{${product.imageUrl}}" alt="Product Image" />
             </td>
             <td>
