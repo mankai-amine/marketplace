@@ -27,8 +27,7 @@ public class S3Service {
 
         try {
             // Upload the file to S3
-            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), null)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), null));
 
             // return the file URL
             return amazonS3.getUrl(bucketName, fileName).toString();

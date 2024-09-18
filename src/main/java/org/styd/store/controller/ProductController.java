@@ -117,13 +117,8 @@ public class ProductController {
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
-        try {
-            String fileUrl = productService.uploadProductImage(file, product.getId());
-            product.setImageUrl(fileUrl);
-            redirAttrs.addFlashAttribute("message", "Product image uploaded successfully.");
-        } catch (Exception e) {
-            redirAttrs.addFlashAttribute("message", "An error occurred while uploading prodcut image.");
-        }
+        String fileUrl = productService.uploadProductImage(file, product.getId());
+        product.setImageUrl(fileUrl);
 
         productRepository.save(product);
 
