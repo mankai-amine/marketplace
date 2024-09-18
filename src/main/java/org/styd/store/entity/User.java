@@ -35,10 +35,10 @@ public class User {
     @Pattern(regexp = "^[a-z0-9]+$", message = "Username must only consist of lower case letters and numbers")
     private String username;
 
+    @Email
     @NotBlank(message="Email is required")
     @Column(unique = true, length = 230)
     private String email;
-
 
     @NotBlank(message="Password is required")
     @Size(min = 6, max = 100, message= "Password must contain between {min} and {max} characters")
