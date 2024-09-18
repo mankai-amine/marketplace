@@ -142,7 +142,17 @@ public class ProductController {
             return "add-product";
         }
 
+        // Custom validation to avoid malicious user doing html edits on hidden id field
         String username = principal.getName();
+        if (product.getId() != null) {
+            Product toCheck = productRepository.findProductById(product.getId());
+            String toConfirm = toCheck.getSeller().getUsername();
+            if (!toConfirm.equals(username)) {
+                redirAttrs.addFlashAttribute("flashMessageError", "User Mismatch.");
+                return "redirect:/";
+            }
+        }
+
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
