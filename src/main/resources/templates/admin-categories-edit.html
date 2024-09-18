@@ -1,3 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head('Edit Category')"></head>
+<head th:replace="~{fragments/head :: head('Edit Category')}"></head>
+<body>
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Edit Category</h5>
+    </div>
+    <div class="card-body">
+        <form th:action="@{/admin/categories/edit/{id}(id=${category.id})}" method="post" th:object="${category}">
+            <div class="mb-3">
+                <label for="categoryName" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" th:field="*{name}" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Category</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

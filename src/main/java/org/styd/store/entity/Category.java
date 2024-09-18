@@ -23,7 +23,8 @@ public class Category {
     @NotBlank(message = "Please enter a name for the category.")
     private String name;
 
-    private Boolean isDeleted;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 
     //FIXME eager or lazy? Hashset needed? TEST
     @OneToMany(mappedBy = "prodCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
