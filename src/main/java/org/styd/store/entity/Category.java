@@ -20,6 +20,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "Please enter a name for the category.")
     private String name;
 

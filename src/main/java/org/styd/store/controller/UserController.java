@@ -113,6 +113,8 @@ public class UserController {
         return "redirect:/";
     }
 
+    // Start of admin mapping
+
     @GetMapping("/admin")
     public String adminMain(){
         return "admin-main";
@@ -137,7 +139,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when creating category.");
             return "admin-categories-add";
         }
-        if (categoryRepo.findByName(category.getName()) != null){
+        if (categoryRepo.findByName(category.getName()).isPresent()){
             redirectAttributes.addFlashAttribute("flashMessageError", "Category already exists.");
             return "admin-categories-add";
         }
@@ -166,9 +168,14 @@ public class UserController {
             redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when updating category.");
             return "admin-categories-edit";
         }
-        Optional<Category> optionalCategory = categoryRepo.findById(category.getId());
-        if (optionalCategory.isPresent()){
-            Category toEdit = optionalCategory.get();
+        Optional<Category> checkId = categoryRepo.findById(category.getId());
+        if (checkId.isPresent()){
+            Optional<Category> checkName = categoryRepo.findByName(category.getName());
+            if (checkName.isPresent() && !checkId.get().getId().equals(checkName.get().getId())){
+                redirectAttributes.addFlashAttribute("flashMessageError", "Category name already exists.");
+                return "admin-categories-edit";
+            }
+            Category toEdit = checkId.get();
             toEdit.setName(category.getName());
             categoryRepo.save(toEdit);
             redirectAttributes.addFlashAttribute("flashMessageSuccess", "Category edited successfully.");
@@ -183,7 +190,7 @@ public class UserController {
     public String categoryDelete(@PathVariable Long id, RedirectAttributes redirectAttributes){
         Optional<Category> toFind = categoryRepo.findById(id);
         if (toFind.isPresent()){
-            // new Category object, DONT DELETE
+            // new Category object, DON'T DELETE
             Category toDelete = toFind.get();
             toDelete.setIsDeleted(true);
             categoryRepo.save(toDelete);
@@ -195,9 +202,55 @@ public class UserController {
         }
     }
 
+    @PostMapping("/admin/categories/restore/{id}")
+    public String categoryRestore(@PathVariable Long id, RedirectAttributes redirectAttributes){
+        Optional<Category> toFind = categoryRepo.findById(id);
+        if (toFind.isPresent()){
+            Category toRestore = toFind.get();
+            toRestore.setIsDeleted(false);
+            categoryRepo.save(toRestore);
+            redirectAttributes.addFlashAttribute("flashMessageSuccess", "Category restored successfully.");
+        } else {
+            redirectAttributes.addFlashAttribute("flashMessageError", "Category not found.");
+        }
+        return "redirect:/admin/categories";
+    }
+
+    // End of Admin Categories
+
     @GetMapping("/admin/users")
-    public String adminUsers(){
+    public String adminUsers(Model model){
+        model.addAttribute("users", userRepo.findAll());
         return "admin-users";
+    }
+
+    @GetMapping("/admin/users/add")
+    public String adminUsersAdd(Model model){
+        model.addAttribute("user", new User());
+        return "admin-users-add";
+    }
+
+//    @PostMapping("/admin/users/add")
+//    public String processUsersAdd(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
+//        if (result.hasErrors()) {
+//            log.debug(String.valueOf(result));
+//            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when adding user.");
+//            return "admin-users-add";
+//        }
+//        // FIXME
+//    }
+
+    @GetMapping("/admin/users/edit/{id}")
+    public String adminUsersEdit(@PathVariable Long id, Model model,
+                                 RedirectAttributes redirectAttributes){
+        Optional<User> toEdit = userRepo.findById(id);
+        if (toEdit.isPresent()){
+            model.addAttribute("user", toEdit.get());
+        } else {
+            redirectAttributes.addFlashAttribute("flashMessageError", "User not found.");
+            return "redirect:/admin/users";
+        }
+        return "admin-users-edit";
     }
 
     @GetMapping("/admin/orders")
