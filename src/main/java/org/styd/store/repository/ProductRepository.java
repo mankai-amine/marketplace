@@ -16,6 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findBySellerId(Long sellerId);
 
+    List<Product> findByIsDeletedFalse();
+
 //    List<Product> findByName(String productName);
 //
 //    List<Product> findByNameContaining(String productName);

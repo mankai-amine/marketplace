@@ -93,9 +93,10 @@ public class ProductController {
     }
 
     @GetMapping({"/seller/edit/{prodId}"})
-    public String editProduct(Model model, @PathVariable Long prodId, Principal principal){
+    public String editProduct(Model model, @PathVariable Long prodId, Principal principal, RedirectAttributes redirectAttributes) {
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Product not found");
             return "redirect:/";
         }
         model.addAttribute("product", product.get());
@@ -106,6 +107,7 @@ public class ProductController {
         Long sellerId = product.get().getSeller().getId();
         boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
         if(!isSellerEqualUser){
+            redirectAttributes.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
             return "redirect:/";
         }
 
@@ -118,15 +120,18 @@ public class ProductController {
         // if a seller tries to delete another seller's product
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
+            redirAttrs.addFlashAttribute("flashMessageError", "Product not found.");
             return "redirect:/";
         }
         Long sellerId = product.get().getSeller().getId();
         boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
         if(!isSellerEqualUser){
+            redirAttrs.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
             return "redirect:/";
         }
-
-        productRepository.deleteById(prodId);
+        Product toDelete = product.get();
+        toDelete.setIsDeleted(true);
+        productRepository.save(toDelete);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
 
         return "redirect:/";
@@ -142,18 +147,18 @@ public class ProductController {
             return "add-product";
         }
 
-        // FIXME check user id instead of username
-        // Custom validation to avoid malicious user doing html edits on hidden id field
-        String username = principal.getName();
+        // Custom validation to prevent overwriting other user's products when malicious user makes html edits on hidden id field
         if (product.getId() != null) {
             Product toCheck = productRepository.findProductById(product.getId());
-            String toConfirm = toCheck.getSeller().getUsername();
-            if (!toConfirm.equals(username)) {
+            Long toConfirm = toCheck.getSeller().getId();
+            Long currentUserId = customUserDetailsService.getCurrentUserId();
+            if (!toConfirm.equals(currentUserId)) {
                 redirAttrs.addFlashAttribute("flashMessageError", "User Mismatch.");
                 return "redirect:/";
             }
         }
 
+        String username = principal.getName();
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
