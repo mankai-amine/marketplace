@@ -84,7 +84,8 @@ public class UserController {
     }
 
     @PostMapping("users/settings/edit" )
-    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
+    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file,
+                               @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
 //        if (result.hasErrors()) {
 //            log.debug(String.valueOf(result));
 //            return "settings";
@@ -115,7 +116,7 @@ public class UserController {
             user.setPassword(currentUser.getPassword());
         }
 
-        userRepository.save(user);
+        userRepo.save(user);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
 
         return "redirect:/";
@@ -279,7 +280,8 @@ public class UserController {
     }
 
     @PostMapping("/admin/users/add")
-    public String processUsersAdd(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
+    public String processUsersAdd(@Valid User user, BindingResult result,
+                                  @RequestParam MultipartFile file, RedirectAttributes redirectAttributes){
         if (result.hasErrors()) {
             log.debug(String.valueOf(result));
             redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when adding user.");
@@ -299,12 +301,16 @@ public class UserController {
             result.rejectValue("email", "emailExists", "Email already exists");
             return "admin-users-add";
         }
+        if (!file.isEmpty()){
+            String fileUrl = userService.uploadUserProfilePicture(file, user.getId());
+            user.setPicture(fileUrl);
+        }
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-        String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
+        String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
         user.setPassword(encodedPassword);
-        user.setCreditCard(encodedCreditCard);
+        user.setCreditCard(hashedCreditCard);
 
         userRepo.save(user);
         redirectAttributes.addFlashAttribute("flashMessageSuccess", "User added successfully.");
@@ -323,6 +329,12 @@ public class UserController {
         }
         return "admin-users-edit";
     }
+
+//    @PostMapping("/admin/users/edit/{id}")
+//    public String processUsersEdit(@Valid User user, BindingResult result,
+//                                   MultipartFile file, RedirectAttributes redirectAttributes){
+//
+//    }
 
     @GetMapping("/admin/orders")
     public String adminOrders(){

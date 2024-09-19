@@ -7,7 +7,7 @@
         <h5 class="mb-0">Add New Category</h5>
     </div>
     <div class="card-body">
-        <form th:action="@{/admin/users/add}" method="post" th:object="${user}">
+        <form th:action="@{/admin/users/add}" method="post" th:object="${user}" class="form col-5 mx-auto" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="userName" class="form-label">Username</label>
                 <input type="text" class="form-control" id="userName" th:field="*{username}" required>
@@ -47,9 +47,15 @@
                 <input type="text" class="form-control" id="credit card" th:field="*{creditCard}">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('creditCard')}" th:errors="*{creditCard}"></div>
             </div>
-            <button type="submit" class="btn btn-primary">Add User</button>
+            <div class="mb-3">
+                <label for="profilePicture">Upload Profile Picture:</label>
+                <input type="hidden" th:field="*{picture}" >
+                <input type="file" id="profilePicture" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="return confirmSave()">Add User</button>
         </form>
     </div>
 </div>
+<a th:href="@{/admin/users}">Back to admin-users page</a>
 </body>
 </html>
