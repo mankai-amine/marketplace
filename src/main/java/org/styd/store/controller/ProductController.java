@@ -46,7 +46,7 @@ public class ProductController {
 
     @GetMapping("/")
     public String viewIndex(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("products", productRepository.findByIsDeletedFalse());
 
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         model.addAttribute("currentUserId", currentUserId);
@@ -54,9 +54,11 @@ public class ProductController {
         return "index";
     }
 
+    // FIXME Null Pointer error if product doesn't exist
     @GetMapping("/product/{prodId}")
     public String viewProduct(@PathVariable Long prodId, Model model, Principal principal) {
         Product product = productRepository.findProductById(prodId);
+
         model.addAttribute("product", product);
 
         Long sellerId = product.getSeller().getId();
@@ -87,15 +89,16 @@ public class ProductController {
     public String addProduct(Model model){
         model.addAttribute("product", new Product());
 
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findByIsDeletedFalse());
 
         return "add-product";
     }
 
     @GetMapping({"/seller/edit/{prodId}"})
-    public String editProduct(Model model, @PathVariable Long prodId, Principal principal){
+    public String editProduct(Model model, @PathVariable Long prodId, Principal principal, RedirectAttributes redirectAttributes) {
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Product not found");
             return "redirect:/";
         }
         model.addAttribute("product", product.get());
@@ -106,6 +109,7 @@ public class ProductController {
         Long sellerId = product.get().getSeller().getId();
         boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
         if(!isSellerEqualUser){
+            redirectAttributes.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
             return "redirect:/";
         }
 
@@ -118,18 +122,44 @@ public class ProductController {
         // if a seller tries to delete another seller's product
         Optional<Product> product = productRepository.findById(prodId);
         if (product.isEmpty()) {
+            redirAttrs.addFlashAttribute("flashMessageError", "Product not found.");
             return "redirect:/";
         }
         Long sellerId = product.get().getSeller().getId();
         boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
         if(!isSellerEqualUser){
+            redirAttrs.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
             return "redirect:/";
         }
+        String urlInsert = getUserIdFromPrincipal(principal);
 
-        productRepository.deleteById(prodId);
+        Product toDelete = product.get();
+        toDelete.setIsDeleted(true);
+        productRepository.save(toDelete);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
 
-        return "redirect:/";
+        return "redirect:/seller/" + urlInsert + "/products";
+    }
+
+    @GetMapping("/seller/restore/{prodId}")
+    public String restoreProduct(@PathVariable Long prodId, RedirectAttributes redirAttrs, Principal principal){
+        Optional<Product> prodToFind = productRepository.findById(prodId);
+        if (prodToFind.isEmpty()){
+            redirAttrs.addFlashAttribute("flashMessageError", "Product not found.");
+            return "redirect:/";
+        }
+        Long sellerId = prodToFind.get().getSeller().getId();
+        if (!checkSellerEqualUser(principal, sellerId)){
+            redirAttrs.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
+            return "redirect:/";
+        }
+        String urlInsert = getUserIdFromPrincipal(principal);
+
+        Product prodToRestore = prodToFind.get();
+        prodToRestore.setIsDeleted(false);
+        productRepository.save(prodToRestore);
+        redirAttrs.addFlashAttribute("flashMessageSuccess", "Product restored successfully");
+        return "redirect:/seller/" + urlInsert + "/products";
     }
 
     @PostMapping("/seller/saveProduct")
@@ -142,18 +172,18 @@ public class ProductController {
             return "add-product";
         }
 
-        // FIXME check user id instead of username
-        // Custom validation to avoid malicious user doing html edits on hidden id field
-        String username = principal.getName();
+        // Custom validation to prevent overwriting other user's products when malicious user makes html edits on hidden id field
         if (product.getId() != null) {
             Product toCheck = productRepository.findProductById(product.getId());
-            String toConfirm = toCheck.getSeller().getUsername();
-            if (!toConfirm.equals(username)) {
+            Long toConfirm = toCheck.getSeller().getId();
+            Long currentUserId = customUserDetailsService.getCurrentUserId();
+            if (!toConfirm.equals(currentUserId)) {
                 redirAttrs.addFlashAttribute("flashMessageError", "User Mismatch.");
                 return "redirect:/";
             }
         }
 
+        String username = principal.getName();
         User seller = userRepository.findByUsername(username);
         product.setSeller(seller);
 
@@ -164,9 +194,11 @@ public class ProductController {
 
         productRepository.save(product);
 
+        String urlInsert = getUserIdFromPrincipal(principal);
+
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product saved successfully");
 
-        return "redirect:/";
+        return "redirect:/seller/" + urlInsert + "/products";
     }
 
 
@@ -182,6 +214,18 @@ public class ProductController {
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * Helper function to get the currently authenticated user's ID for URL redirect
+     * @param principal Authenticated user
+     * @return principal user's Long ID converted to a String for url insertion
+     */
+    private String getUserIdFromPrincipal(Principal principal){
+        User userRedirect = userRepository.findByUsername(principal.getName());
+        Long userLongRedirect = userRedirect.getId();
+        return userLongRedirect.toString();
     }
 
 }
