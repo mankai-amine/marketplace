@@ -7,16 +7,7 @@
 </head>
 <body>
 
-<div>
-    <span sec:authorize="isAnonymous()">
-        Welcome! Please <a th:href="@{/login}">log in</a>.
-    </span>
-    <span sec:authorize="isAuthenticated()">
-        Welcome, <span sec:authentication="name">
-    </span>!
-        <a th:href="@{/logout}" class="btn btn-danger p-2">Logout</a>
-    </span>
-</div>
+<div th:replace="fragments/header"></div>
 
 <div th:if="${message}" class="alert alert-success">
     <p th:text="${message}"></p>

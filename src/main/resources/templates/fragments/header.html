@@ -1,0 +1,28 @@
+<header th:fragment="header">
+    <nav>
+        <div>
+    <span sec:authorize="isAnonymous()">
+        Welcome! Please <a th:href="@{/login}">log in</a>.
+    </span>
+            <span sec:authorize="isAuthenticated()">
+        Welcome, <span sec:authentication="name">
+    </span>!
+        <a th:href="@{/logout}" class="btn btn-danger p-2">Logout</a>
+    </span>
+        </div>
+        <ul>
+            <li><a th:href="@{/}">View all Products</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/add}">Add a Product</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_ADMIN'')')}"><a th:href="@{/admin}">Admin main directory</a></li>
+
+<!--            <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">-->
+<!--        <span th:if="${isSellerEqualUser}">-->
+<!--            <a th:href="@{/seller/add}" class="btn btn-info">Add a product</a>-->
+<!--        </span>-->
+<!--                <a th:href="@{/seller/{currentUserId}/products(currentUserId=${currentUserId})}" class="btn btn-info">View Your Products</a>-->
+<!--            </div>-->
+        </ul>
+    </nav>
+</header>
+</body>
+</html>
