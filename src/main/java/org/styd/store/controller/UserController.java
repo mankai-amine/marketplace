@@ -337,10 +337,20 @@ public class UserController {
     public String processUsersEdit(@Valid User user, BindingResult result,
                                    MultipartFile file, RedirectAttributes redirectAttributes){
         User dbComparison = userRepo.findById(user.getId()).get();
+        // if form input and db value don't match
         if (!user.getUsername().equals(dbComparison.getUsername())){
+            // make sure the username doesn't already exist
+            if (userRepo.findByUsername(user.getUsername()) != null) {
+                result.rejectValue("username", "usernameExists", "Username already exists");
+            }
             dbComparison.setUsername(user.getUsername());
         }
+        // check that form input for user and user's db email are not matching
         if (!user.getEmail().equals(dbComparison.getEmail())){
+            // since they don't match, db cannot already have an email like the one input on form
+            if (userRepo.findByEmail(user.getEmail()) != null){
+                result.rejectValue("email", "emailExists", "Email already exists");
+            }
             dbComparison.setEmail(user.getEmail());
         }
         if (!user.getRole().equals(dbComparison.getRole())){
