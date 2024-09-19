@@ -27,7 +27,7 @@ public class Category {
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
 
-    //FIXME eager or lazy? Hashset needed? TEST
+    // empty Hashset declared to avoid LazyInitilization error
     @OneToMany(mappedBy = "prodCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 }
