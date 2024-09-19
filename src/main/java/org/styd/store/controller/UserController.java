@@ -80,22 +80,38 @@ public class UserController {
     public String settings(Principal principal, Model model) {
         String username = principal.getName();
         User currentUser = userRepo.findByUsername(username);
+        // hide the credit card number
+        currentUser.setCreditCard(null);
         model.addAttribute("user", currentUser);
         return "user-settings";
     }
 
     @PostMapping("users/settings/edit" )
-    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
+    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file,
+                               @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
 
-
-        if (result.hasErrors()) {
-            log.debug(String.valueOf(result));
+        // check if the updated email already exists
+        String currentEmail = currentUser.getUser().getEmail();
+        if (userRepo.findByEmail(user.getEmail()) != null && !user.getEmail().equals(currentEmail)) {
+            result.rejectValue("email", "emailExists", "Email already exists");
             return "user-settings";
         }
 
-         user.setUsername(currentUser.getUser().getUsername());
+        // check that the entered passwords match
+        if (!user.getPassword().equals(user.getPassword2())) {
+            result.rejectValue("password2", "passwordsDoNotMatch", "Passwords must match");
+            return "user-settings";
+        }
 
-         user.setRole(currentUser.getUser().getRole());
+        // Hash the password and store it in the database
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+        } else{
+            // keep the existing password card if no new one is provided
+            user.setPassword(currentUser.getPassword());
+        }
 
         // store the file URL in the database
         if (!file.isEmpty()){
@@ -105,24 +121,23 @@ public class UserController {
 
         // Hash the credit card and store it in the database
         if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()) {
-            String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
-            user.setCreditCard(hashedCreditCard);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
+            user.setCreditCard(encodedCreditCard);
+        } else {
+            // keep the existing credit card if no new one is provided
+            user.setCreditCard(currentUser.getUser().getCreditCard());
         }
 
-        // Hash the password and store it in the database
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-        } else{
-            user.setPassword(currentUser.getPassword());
-        }
+        user.setUsername(currentUser.getUser().getUsername());
+        user.setRole(currentUser.getUser().getRole());
 
         userRepo.save(user);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
 
         return "redirect:/";
     }
+
 
 //    // FIXME Turn this into a settings page later
 //    @GetMapping("/users/uploadimgform")

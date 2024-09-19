@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head('Settings')">
+<head th:replace="~{fragments/head :: head('Settings')}">
 </head>
 
 
@@ -10,12 +10,12 @@
 
     <form th:action="@{/users/settings/edit}" th:object="${user}" method="post" class="form col-5 mx-auto" enctype="multipart/form-data">
 
-        <h3 class="text-center mb-3" >Settings</h3>
+        <h3 class="text-center mb-3">Account Settings</h3>
 
         <div class="form-group mb-3">
             <label for="email">Email</label>
             <div style="display: flex">
-                <input id="email" class="form-control" type="text" th:field="*{email}" disabled>
+                <input id="email" class="form-control" type="email" th:field="*{email}" disabled>
                 <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('email')">Edit</span>
             </div>
             <div class="alert alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
@@ -24,10 +24,18 @@
         <div class="form-group mb-3">
             <label for="password">Password:</label>
             <div style="display: flex">
-                <input id="password" class="form-control" type="password" th:field="*{password}" disabled>
-                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('password')">Edit</span>
+                <input id="password" class="form-control" type="password" th:field="*{password}" minlength="6" maxlength="100" placeholder="**********" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enablePass('password')">Edit</span>
             </div>
             <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group mb-3" style="display: none" id="confirmPass" >
+            <label for="password2">Confirm Password:</label>
+            <div>
+                <input id="password2" class="form-control" type="password" th:field="*{password2}">
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}"></div>
         </div>
 
         <div class="form-group mb-3">
@@ -36,13 +44,14 @@
                 <input id="address" class="form-control" type="text" th:field="*{address}" disabled>
                 <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('address')">Edit</span>
             </div>
-                <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
         </div>
 
         <div class="form-group mb-3">
             <label for="creditCard">Credit card:</label>
             <div style="display: flex">
-                <input id="creditCard" class="form-control" type="text" th:field="*{creditCard}" disabled>
+                <input id="creditCard" class="form-control" type="text" th:field="*{creditCard}" placeholder="**********"
+                       disabled>
                 <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('creditCard')">Edit</span>
             </div>
             <div class="alert alert-warning" th:if="${#fields.hasErrors('creditCard')}" th:errors="*{creditCard}"></div>
@@ -69,6 +78,11 @@
 <script>
     function enableInput(inputId) {
         document.getElementById(inputId).disabled=false;
+    }
+
+    function enablePass(inputId) {
+        document.getElementById(inputId).disabled=false;
+        document.getElementById("confirmPass").style.display = "block";
     }
 
     function confirmSave() {
