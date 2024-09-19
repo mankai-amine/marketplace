@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('User Image Upload')}"></head>
+<div th:replace="~{fragments/header}"></div>
 
 <body class="d-flex align-items-center justify-content-center">
 <form th:action="@{/users/{id}/uploadProfilePicture(id=${user.id})}" enctype="multipart/form-data" method="post" class="form col-3 mx-auto">

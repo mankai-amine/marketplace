@@ -107,6 +107,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute("flashMessageSuccess", "Profile picture uploaded successfully.");
 //             FIXME more precise exception handling?
         } catch (Exception e) {
+            log.debug(String.valueOf(e));
             redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred while uploading profile picture.");
         }
 
@@ -230,15 +231,38 @@ public class UserController {
         return "admin-users-add";
     }
 
-//    @PostMapping("/admin/users/add")
-//    public String processUsersAdd(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
-//        if (result.hasErrors()) {
-//            log.debug(String.valueOf(result));
-//            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when adding user.");
-//            return "admin-users-add";
-//        }
-//        // FIXME
-//    }
+    @PostMapping("/admin/users/add")
+    public String processUsersAdd(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
+        if (result.hasErrors()) {
+            log.debug(String.valueOf(result));
+            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when adding user.");
+            return "admin-users-add";
+        }
+        if (!user.getPassword().equals(user.getPassword2())) {
+            result.rejectValue("password2", "passwordsDoNotMatch", "Passwords must match");
+            return "admin-users-add";
+        }
+
+        if (userRepo.findByUsername(user.getUsername()) != null) {
+            result.rejectValue("username", "usernameExists", "Username already exists");
+            return "admin-users-add";
+        }
+
+        if (userRepo.findByEmail(user.getEmail()) != null) {
+            result.rejectValue("email", "emailExists", "Email already exists");
+            return "admin-users-add";
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
+        user.setPassword(encodedPassword);
+        user.setCreditCard(encodedCreditCard);
+
+        userRepo.save(user);
+        redirectAttributes.addFlashAttribute("flashMessageSuccess", "User added successfully.");
+        return "redirect:/admin/users";
+    }
 
     @GetMapping("/admin/users/edit/{id}")
     public String adminUsersEdit(@PathVariable Long id, Model model,
