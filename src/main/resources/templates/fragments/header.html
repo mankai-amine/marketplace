@@ -23,6 +23,11 @@
 <!--            </div>-->
         </ul>
     </nav>
+    <div th:if="${flashMessageSuccess}" class="alert alert-success">
+        <p th:text="${flashMessageSuccess}"></p>
+    </div>
+    <div th:if="${flashMessageError}" class="alert alert-danger">
+        <p th:text="${flashMessageError}"></p>
+    </div>
+
 </header>
-</body>
-</html>
