@@ -90,11 +90,17 @@ public class UserController {
     public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file,
                                @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
 
-        // check if the updated email already exists
-        //String currentEmail = currentUser.getUser().getEmail();
-        if (userRepo.findByEmail(user.getEmail()) != null && !user.getId().equals(currentUser.getUser().getId())) {
-            result.rejectValue("email", "emailExists", "Email already exists");
-            return "user-settings";
+        if (!user.getId().equals(currentUser.getUser().getId())){
+            redirAttrs.addFlashAttribute("flashMessageError", "User mismatch, access denied.");
+        }
+
+        // if the form input email exist in DB
+        if (userRepo.findByEmail(user.getEmail()) != null) {
+            // if the current user's (spring's) id DOES NOT match the id associated with the email in the db, reject
+            if (!currentUser.getId().equals(userRepo.findByEmail(user.getEmail()).getId())) {
+                result.rejectValue("email", "emailExists", "Email already exists");
+                return "user-settings";
+            }
         }
 
         // check that the entered passwords match
