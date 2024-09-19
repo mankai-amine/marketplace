@@ -15,15 +15,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void uploadUserProfilePicture(MultipartFile file, Long userId) {
+    public String uploadUserProfilePicture(MultipartFile file, Long userId) {
 
         String directory = "users/" + userId + "/";
         String fileUrl = s3Service.uploadFile(file, directory);
 
-        // store the file url in the database
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setPicture(fileUrl);
-        userRepository.save(user);
+        return fileUrl;
     }
 }
 

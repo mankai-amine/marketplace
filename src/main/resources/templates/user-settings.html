@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Settings')">
+</head>
+
+
+<body class="d-flex align-items-center justify-content-center">
+
+<div class="container my-5">
+
+    <form th:action="@{/users/settings/edit}" th:object="${user}" method="post" class="form col-5 mx-auto" enctype="multipart/form-data">
+
+        <h3 class="text-center mb-3" >Settings</h3>
+
+        <div class="form-group mb-3">
+            <label for="email">Email</label>
+            <div style="display: flex">
+                <input id="email" class="form-control" type="text" th:field="*{email}" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('email')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="password">Password:</label>
+            <div style="display: flex">
+                <input id="password" class="form-control" type="password" th:field="*{password}" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('password')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="address">Address:</label>
+            <div style="display: flex">
+                <input id="address" class="form-control" type="text" th:field="*{address}" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('address')">Edit</span>
+            </div>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="creditCard">Credit card:</label>
+            <div style="display: flex">
+                <input id="creditCard" class="form-control" type="text" th:field="*{creditCard}" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('creditCard')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('creditCard')}" th:errors="*{creditCard}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="profilePicture">Upload Profile Picture:</label>
+            <input type="hidden" th:field="*{picture}" >
+            <input type="file" id="profilePicture" name="file">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary" onclick="return confirmSave()">Save</button>
+        </div>
+
+        <input type="hidden" th:field="*{id}"/>
+
+    </form>
+    <hr/>
+    <a th:href="@{/}">Back to home page</a>
+</div>
+
+
+<script>
+    function enableInput(inputId) {
+        document.getElementById(inputId).disabled=false;
+    }
+
+    function confirmSave() {
+        document.querySelectorAll('input:disabled').forEach(input => {
+            input.disabled = false;
+        });
+        return confirm('Are you sure you want to save the changes?');
+    }
+</script>
+</body>
+</html>

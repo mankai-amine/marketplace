@@ -2,6 +2,7 @@ package org.styd.store.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,7 @@ import org.styd.store.repository.UserRepository;
 import org.styd.store.securingweb.CustomUserDetails;
 import org.styd.store.service.UserService;
 
+import java.security.Principal;
 import java.util.Optional;
 
 
@@ -73,46 +75,91 @@ public class UserController {
         return "register-success";
     }
 
-    // FIXME Turn this into a settings page later
-    @GetMapping("/users/uploadimgform")
-    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model,
-                                RedirectAttributes redirectAttributes){
-        if (currentUser.getUser() == null){
-            redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred.");
-            return "redirect:/";
-        }
-
-        // Temporary solution around product LazyRetrieval error, keeping in case it's needed again
-//        User user = userRepo.findById(currentUser.getUser().getId())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Below code works again with the User class declaring a new empty HashSet<> for products when initialized
-        model.addAttribute("user", currentUser.getUser());
-        return "user-image-upload";
+    @GetMapping("/users/settings")
+    public String settings(Principal principal, Model model) {
+        String username = principal.getName();
+        User currentUser = userRepo.findByUsername(username);
+        model.addAttribute("user", currentUser);
+        return "user-settings";
     }
 
-    @PostMapping("/users/{userId}/uploadProfilePicture")
-    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser,
-                                       RedirectAttributes redirectAttributes) {
-        if (!currentUser.getUser().getId().equals(userId)) {
-            redirectAttributes.addFlashAttribute("flashMessageError", "ID mismatch error.");
-            return "redirect:/";
+    @PostMapping("users/settings/edit" )
+    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
+//        if (result.hasErrors()) {
+//            log.debug(String.valueOf(result));
+//            return "settings";
+//        }
+
+         user.setUsername(currentUser.getUser().getUsername());
+
+         user.setRole(currentUser.getUser().getRole());
+
+        // store the file URL in the database
+        if (!file.isEmpty()){
+            String fileUrl = userService.uploadUserProfilePicture(file, user.getId());
+            user.setPicture(fileUrl);
         }
-        if (file.isEmpty()){
-            redirectAttributes.addFlashAttribute("flashMessageError", "Please upload a file and try again.");
-            return "redirect:/";
+
+        // Hash the credit card and store it in the database
+        if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()) {
+            String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
+            user.setCreditCard(hashedCreditCard);
         }
-        try {
-            userService.uploadUserProfilePicture(file, userId);
-            redirectAttributes.addFlashAttribute("flashMessageSuccess", "Profile picture uploaded successfully.");
-//             FIXME more precise exception handling?
-        } catch (Exception e) {
-            log.debug(String.valueOf(e));
-            redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred while uploading profile picture.");
+
+        // Hash the password and store it in the database
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        } else{
+            user.setPassword(currentUser.getPassword());
         }
+
+        userRepository.save(user);
+        redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
 
         return "redirect:/";
     }
+
+//    // FIXME Turn this into a settings page later
+//    @GetMapping("/users/uploadimgform")
+//    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model,
+//                                RedirectAttributes redirectAttributes){
+//        if (currentUser.getUser() == null){
+//            redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred.");
+//            return "redirect:/";
+//        }
+//
+//        // Temporary solution around product LazyRetrieval error, keeping in case it's needed again
+////        User user = userRepo.findById(currentUser.getUser().getId())
+////                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        // Below code works again with the User class declaring a new empty HashSet<> for products when initialized
+//        model.addAttribute("user", currentUser.getUser());
+//        return "user-image-upload";
+//    }
+//
+//    @PostMapping("/users/{userId}/uploadProfilePicture")
+//    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser,
+//                                       RedirectAttributes redirectAttributes) {
+//        if (!currentUser.getUser().getId().equals(userId)) {
+//            redirectAttributes.addFlashAttribute("flashMessageError", "ID mismatch error.");
+//            return "redirect:/";
+//        }
+//        if (file.isEmpty()){
+//            redirectAttributes.addFlashAttribute("flashMessageError", "Please upload a file and try again.");
+//            return "redirect:/";
+//        }
+//        try {
+//            userService.uploadUserProfilePicture(file, userId);
+//            redirectAttributes.addFlashAttribute("flashMessageSuccess", "Profile picture uploaded successfully.");
+////             FIXME more precise exception handling?
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred while uploading profile picture.");
+//        }
+//
+//        return "redirect:/";
+//    }
 
     // Start of admin mapping
 

@@ -4,6 +4,12 @@
 <body>
 
 <div th:replace="~{fragments/header}"></div>
+<div th:if="${#authorization.expression('isAuthenticated()')}"><a th:href="@{/users/settings}">Account settings</a></div>
+
+
+<div th:if="${message}" class="alert alert-success">
+    <p th:text="${message}"></p>
+</div>
 
 <h1>Products</h1>
 
@@ -51,7 +57,7 @@
         </tbody>
     </table>
 </div>
-<a th:href="@{/users/uploadimgform}" class="btn btn-info">Upload an image</a>
+
 
 <div th:if="${products == null || #lists.isEmpty(products)}">
     <p>No Products available at the moment.</p>
