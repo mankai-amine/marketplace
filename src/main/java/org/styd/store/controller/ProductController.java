@@ -89,7 +89,7 @@ public class ProductController {
     public String addProduct(Model model){
         model.addAttribute("product", new Product());
 
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findByIsDeletedFalse());
 
         return "add-product";
     }
@@ -131,12 +131,14 @@ public class ProductController {
             redirAttrs.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
             return "redirect:/";
         }
+        String urlInsert = getUserIdFromPrincipal(principal);
+
         Product toDelete = product.get();
         toDelete.setIsDeleted(true);
         productRepository.save(toDelete);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
 
-        return "redirect:/";
+        return "redirect:/seller/" + urlInsert + "/products";
     }
 
     @GetMapping("/seller/restore/{prodId}")
@@ -151,11 +153,13 @@ public class ProductController {
             redirAttrs.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
             return "redirect:/";
         }
+        String urlInsert = getUserIdFromPrincipal(principal);
+
         Product prodToRestore = prodToFind.get();
         prodToRestore.setIsDeleted(false);
         productRepository.save(prodToRestore);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product restored successfully");
-        return "redirect:/";
+        return "redirect:/seller/" + urlInsert + "/products";
     }
 
     @PostMapping("/seller/saveProduct")
@@ -190,9 +194,11 @@ public class ProductController {
 
         productRepository.save(product);
 
+        String urlInsert = getUserIdFromPrincipal(principal);
+
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product saved successfully");
 
-        return "redirect:/";
+        return "redirect:/seller/" + urlInsert + "/products";
     }
 
     // check if the authenticated user has the same id as sellerId in the URL
@@ -206,6 +212,18 @@ public class ProductController {
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * Helper function to get the currently authenticated user's ID for URL redirect
+     * @param principal Authenticated user
+     * @return principal user's Long ID converted to a String for url insertion
+     */
+    private String getUserIdFromPrincipal(Principal principal){
+        User userRedirect = userRepository.findByUsername(principal.getName());
+        Long userLongRedirect = userRedirect.getId();
+        return userLongRedirect.toString();
     }
 
 }

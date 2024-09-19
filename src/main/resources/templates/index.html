@@ -62,15 +62,13 @@
                     <form th:if="${product.isDeleted} == true" th:action="@{/seller/restore/{id}(id=${product.id})}" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to restore this product?')">Restore</button>
                     </form>
-<!--                    <a th:if="${product.isDeleted} == false" th:href="@{/seller/delete/{id}(id=${product.id})}" class="btn btn-danger ml-2">Delete</a>-->
-<!--                    <a th:if="${product.isDeleted} == true" th:href="@{/seller/restore/{id}(id=${product.id})}" class="btn btn-warning ml-2">Restore</a>-->
                 </span>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-<a th:href="@{users/uploadimgform}" class="btn btn-info">Upload an image</a>
+<a th:href="@{/users/uploadimgform}" class="btn btn-info">Upload an image</a>
 
 <div th:if="${products == null || #lists.isEmpty(products)}">
     <p>No Products available at the moment.</p>
