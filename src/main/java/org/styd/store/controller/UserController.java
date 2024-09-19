@@ -91,8 +91,8 @@ public class UserController {
                                @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
 
         // check if the updated email already exists
-        String currentEmail = currentUser.getUser().getEmail();
-        if (userRepo.findByEmail(user.getEmail()) != null && !user.getEmail().equals(currentEmail)) {
+        //String currentEmail = currentUser.getUser().getEmail();
+        if (userRepo.findByEmail(user.getEmail()) != null && !user.getId().equals(currentUser.getUser().getId())) {
             result.rejectValue("email", "emailExists", "Email already exists");
             return "user-settings";
         }
