@@ -363,7 +363,7 @@ public class UserController {
         // check if file uploaded
         if (!file.isEmpty()){
             String fileUrl = userService.uploadUserProfilePicture(file, user.getId());
-            user.setPicture(fileUrl);
+            dbComparison.setPicture(fileUrl);
         }
 
         // check if password fields are both filled and match before updating the user's password, otherwise don't
