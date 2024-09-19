@@ -2,6 +2,7 @@ package org.styd.store.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -84,12 +85,24 @@ public class UserController {
         return "user-settings";
     }
 
-    @PostMapping("users/settings" )
-    public String saveSettings(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
+    @PostMapping("users/settings/edit" )
+    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
         if (result.hasErrors()) {
             log.debug(String.valueOf(result));
             redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when saving settings.");
             return "user-settings";
+        }
+
+        // store the file URL in the database
+        if (!file.isEmpty()){
+            String fileUrl = userService.uploadUserProfilePicture(file, user.getId());
+            user.setPicture(fileUrl);
+        }
+
+        // Hash the credit card and store it in teh database
+        if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()) {
+            String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
+            user.setCreditCard(hashedCreditCard);
         }
 
         userRepository.save(user);
