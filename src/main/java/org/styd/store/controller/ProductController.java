@@ -46,7 +46,7 @@ public class ProductController {
 
     @GetMapping("/")
     public String viewIndex(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        model.addAttribute("products", productRepository.findByIsDeletedFalse());
 
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         model.addAttribute("currentUserId", currentUserId);
@@ -54,9 +54,11 @@ public class ProductController {
         return "index";
     }
 
+    // FIXME Null Pointer error if product doesn't exist
     @GetMapping("/product/{prodId}")
     public String viewProduct(@PathVariable Long prodId, Model model, Principal principal) {
         Product product = productRepository.findProductById(prodId);
+
         model.addAttribute("product", product);
 
         Long sellerId = product.getSeller().getId();
@@ -134,6 +136,25 @@ public class ProductController {
         productRepository.save(toDelete);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
 
+        return "redirect:/";
+    }
+
+    @GetMapping("/seller/restore/{prodId}")
+    public String restoreProduct(@PathVariable Long prodId, RedirectAttributes redirAttrs, Principal principal){
+        Optional<Product> prodToFind = productRepository.findById(prodId);
+        if (prodToFind.isEmpty()){
+            redirAttrs.addFlashAttribute("flashMessageError", "Product not found.");
+            return "redirect:/";
+        }
+        Long sellerId = prodToFind.get().getSeller().getId();
+        if (!checkSellerEqualUser(principal, sellerId)){
+            redirAttrs.addFlashAttribute("flashMessageError", "Seller ID mismatch.");
+            return "redirect:/";
+        }
+        Product prodToRestore = prodToFind.get();
+        prodToRestore.setIsDeleted(false);
+        productRepository.save(prodToRestore);
+        redirAttrs.addFlashAttribute("flashMessageSuccess", "Product restored successfully");
         return "redirect:/";
     }
 

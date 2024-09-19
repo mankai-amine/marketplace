@@ -12,6 +12,7 @@
 </div>
 
 <div th:if="${product}">
+    <h1 th:if="${product.isDeleted} == true" class="text-warning">This product has been delisted and is not for sale.</h1>
     <h1 th:text="${product.name}"></h1>
     <table class="table table-bordered table-striped" id="productTable">
         <thead>
