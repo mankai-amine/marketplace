@@ -36,8 +36,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/register")
     public String viewRegisterPage(Model model){
@@ -86,7 +84,8 @@ public class UserController {
     }
 
     @PostMapping("users/settings/edit" )
-    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
+    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file,
+                               @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
 //        if (result.hasErrors()) {
 //            log.debug(String.valueOf(result));
 //            return "settings";
@@ -117,7 +116,7 @@ public class UserController {
             user.setPassword(currentUser.getPassword());
         }
 
-        userRepository.save(user);
+        userRepo.save(user);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
 
         return "redirect:/";
@@ -280,15 +279,43 @@ public class UserController {
         return "admin-users-add";
     }
 
-//    @PostMapping("/admin/users/add")
-//    public String processUsersAdd(@Valid User user, BindingResult result, RedirectAttributes redirectAttributes){
-//        if (result.hasErrors()) {
-//            log.debug(String.valueOf(result));
-//            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when adding user.");
-//            return "admin-users-add";
-//        }
-//        // FIXME
-//    }
+    @PostMapping("/admin/users/add")
+    public String processUsersAdd(@Valid User user, BindingResult result,
+                                  @RequestParam MultipartFile file, RedirectAttributes redirectAttributes){
+        if (result.hasErrors()) {
+            log.debug(String.valueOf(result));
+            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when adding user.");
+            return "admin-users-add";
+        }
+        if (!user.getPassword().equals(user.getPassword2())) {
+            result.rejectValue("password2", "passwordsDoNotMatch", "Passwords must match");
+            return "admin-users-add";
+        }
+
+        if (userRepo.findByUsername(user.getUsername()) != null) {
+            result.rejectValue("username", "usernameExists", "Username already exists");
+            return "admin-users-add";
+        }
+
+        if (userRepo.findByEmail(user.getEmail()) != null) {
+            result.rejectValue("email", "emailExists", "Email already exists");
+            return "admin-users-add";
+        }
+        if (!file.isEmpty()){
+            String fileUrl = userService.uploadUserProfilePicture(file, user.getId());
+            user.setPicture(fileUrl);
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
+        user.setPassword(encodedPassword);
+        user.setCreditCard(hashedCreditCard);
+
+        userRepo.save(user);
+        redirectAttributes.addFlashAttribute("flashMessageSuccess", "User added successfully.");
+        return "redirect:/admin/users";
+    }
 
     @GetMapping("/admin/users/edit/{id}")
     public String adminUsersEdit(@PathVariable Long id, Model model,
@@ -302,6 +329,12 @@ public class UserController {
         }
         return "admin-users-edit";
     }
+
+//    @PostMapping("/admin/users/edit/{id}")
+//    public String processUsersEdit(@Valid User user, BindingResult result,
+//                                   MultipartFile file, RedirectAttributes redirectAttributes){
+//
+//    }
 
     @GetMapping("/admin/orders")
     public String adminOrders(){
