@@ -57,7 +57,7 @@ public class User {
 
     @Column(name = "credit_card")
     //@Size(min = 14, max = 16, message = "Credit card number must be between 14 and 16 digits")
-    @Pattern(regexp = "\\d*", message = "Credit card number must contain only digits")
+    //@Pattern(regexp = "\\d*", message = "Credit card number must contain only digits")
     private String creditCard;
 
 

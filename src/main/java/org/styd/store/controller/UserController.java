@@ -86,12 +86,15 @@ public class UserController {
     }
 
     @PostMapping("users/settings/edit" )
-    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
-        if (result.hasErrors()) {
-            log.debug(String.valueOf(result));
-            redirectAttributes.addFlashAttribute("flashMessageError", "Error occurred when saving settings.");
-            return "user-settings";
-        }
+    public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
+//        if (result.hasErrors()) {
+//            log.debug(String.valueOf(result));
+//            return "settings";
+//        }
+
+         user.setUsername(currentUser.getUser().getUsername());
+
+         user.setRole(currentUser.getUser().getRole());
 
         // store the file URL in the database
         if (!file.isEmpty()){
@@ -99,14 +102,23 @@ public class UserController {
             user.setPicture(fileUrl);
         }
 
-        // Hash the credit card and store it in teh database
+        // Hash the credit card and store it in the database
         if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()) {
             String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
             user.setCreditCard(hashedCreditCard);
         }
 
+        // Hash the password and store it in the database
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        } else{
+            user.setPassword(currentUser.getPassword());
+        }
+
         userRepository.save(user);
-        redirectAttributes.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
+        redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
 
         return "redirect:/";
     }
