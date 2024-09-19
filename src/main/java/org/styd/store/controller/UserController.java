@@ -36,8 +36,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
+
 
     @GetMapping("/register")
     public String viewRegisterPage(Model model){
@@ -87,10 +86,12 @@ public class UserController {
 
     @PostMapping("users/settings/edit" )
     public String saveSettings(@Valid User user, BindingResult result, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirAttrs){
-//        if (result.hasErrors()) {
-//            log.debug(String.valueOf(result));
-//            return "settings";
-//        }
+
+
+        if (result.hasErrors()) {
+            log.debug(String.valueOf(result));
+            return "user-settings";
+        }
 
          user.setUsername(currentUser.getUser().getUsername());
 
@@ -117,7 +118,7 @@ public class UserController {
             user.setPassword(currentUser.getPassword());
         }
 
-        userRepository.save(user);
+        userRepo.save(user);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
 
         return "redirect:/";
