@@ -61,8 +61,8 @@ public class User {
     private String creditCard;
 
 
-    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //private Set<Order> orders;
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private Set<CartItem> cartItems;
@@ -70,7 +70,6 @@ public class User {
 //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
-
 
 
 }
