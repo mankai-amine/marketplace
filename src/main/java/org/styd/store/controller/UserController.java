@@ -346,7 +346,10 @@ public class UserController {
                                  RedirectAttributes redirectAttributes){
         Optional<User> toEdit = userRepo.findById(id);
         if (toEdit.isPresent()){
-            model.addAttribute("user", toEdit.get());
+            User nullPassAndCredit = toEdit.get();
+            nullPassAndCredit.setPassword(null);
+            nullPassAndCredit.setCreditCard(null);
+            model.addAttribute("user", nullPassAndCredit);
         } else {
             redirectAttributes.addFlashAttribute("flashMessageError", "User not found.");
             return "redirect:/admin/users";
@@ -354,11 +357,61 @@ public class UserController {
         return "admin-users-edit";
     }
 
-//    @PostMapping("/admin/users/edit/{id}")
-//    public String processUsersEdit(@Valid User user, BindingResult result,
-//                                   MultipartFile file, RedirectAttributes redirectAttributes){
-//
-//    }
+    @PostMapping("/admin/users/edit/{id}")
+    public String processUsersEdit(@Valid User user, BindingResult result,
+                                   MultipartFile file, RedirectAttributes redirectAttributes){
+        User dbComparison = userRepo.findById(user.getId()).get();
+        // if form input and db value don't match
+        if (!user.getUsername().equals(dbComparison.getUsername())){
+            // make sure the username doesn't already exist
+            if (userRepo.findByUsername(user.getUsername()) != null) {
+                result.rejectValue("username", "usernameExists", "Username already exists");
+            }
+            dbComparison.setUsername(user.getUsername());
+        }
+        // check that form input for user and user's db email are not matching
+        if (!user.getEmail().equals(dbComparison.getEmail())){
+            // since they don't match, db cannot already have an email like the one input on form
+            if (userRepo.findByEmail(user.getEmail()) != null){
+                result.rejectValue("email", "emailExists", "Email already exists");
+            }
+            dbComparison.setEmail(user.getEmail());
+        }
+        if (!user.getRole().equals(dbComparison.getRole())){
+            dbComparison.setRole(user.getRole());
+        }
+        if (!user.getAddress().equals(dbComparison.getAddress())){
+            dbComparison.setAddress(user.getAddress());
+        }
+
+        // check if file uploaded
+        if (!file.isEmpty()){
+            String fileUrl = userService.uploadUserProfilePicture(file, user.getId());
+            dbComparison.setPicture(fileUrl);
+        }
+
+        // check if password fields are both filled and match before updating the user's password, otherwise don't
+        if ((user.getPassword() != null && !user.getPassword().isEmpty()) && (user.getPassword2() != null && !user.getPassword2().isEmpty())){
+            if (user.getPassword().equals(user.getPassword2())) {
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                String encodedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(encodedPassword);
+            } else {
+                result.rejectValue("password2", "passwordsDoNotMatch", "Passwords must match");
+                return "admin-users-edit";
+            }
+        }
+
+        // check if credit card edited
+        if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()){
+            String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
+            dbComparison.setCreditCard(hashedCreditCard);
+        }
+
+        userRepo.save(dbComparison);
+        redirectAttributes.addFlashAttribute("flashMessageSuccess", "User edited successfully.");
+        return "redirect:/admin/users";
+    }
 
     @GetMapping("/admin/orders")
     public String adminOrders(){

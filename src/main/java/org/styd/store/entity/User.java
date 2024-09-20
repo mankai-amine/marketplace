@@ -15,8 +15,6 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-
 @Table(name = "users")
 public class User {
 
@@ -68,9 +66,49 @@ public class User {
 //    private Set<CartItem> cartItems;
 
 //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
+    //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 
+    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //private Set<Order> orders;
 
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CartItem> cartItems = new HashSet<>();
+
+    ///// Cart methods below /////
+
+    public void addToCart(Product product, int amount) {
+        CartItem checkExisting = findCartItem(product);
+        if (checkExisting != null) {
+            // in controller, check the stock amount of the product
+            checkExisting.setAmount(checkExisting.getAmount() + amount);
+        } else {
+            cartItems.add(new CartItem(this, product, amount));
+        }
+    }
+
+    // this will check to make sure the item is actually in the cart before it goes to remove it
+    public void removeFromCart(Product product) {
+        cartItems.removeIf(item -> item.getProduct().equals(product));
+    }
+
+    public void clearCart() {
+        cartItems.clear();
+    }
+
+    public CartItem findCartItem(Product product) {
+        return cartItems.stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findFirst()
+                .orElse(null);
+    }
+    // FIXME code below is the same as above, only for reference
+    //        for (CartItem item : cartItems) {
+//            if (item.getProduct().equals(product)) {
+//                return item;
+//            }
+//        }
+//        return null;
 }
 

@@ -6,6 +6,11 @@
 <div th:replace="~{fragments/header}"></div>
 <div th:if="${#authorization.expression('isAuthenticated()')}"><a th:href="@{/users/settings}">Account settings</a></div>
 
+<!--<div th:if="${#authorization.expression('isAuthenticated()')}">-->
+<!--    <span th:if="${}">-->
+<!--        <img th:src="@{${user.imageUrl}}" alt="User Image" />-->
+<!--    </span>-->
+<!--</div>-->
 
 <div th:if="${message}" class="alert alert-success">
     <p th:text="${message}"></p>
