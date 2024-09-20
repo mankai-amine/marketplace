@@ -130,3 +130,23 @@
 - Look into how to start working on Cart and orders/order_items
 3. Need assistance / figure things out
 - Cart implementation
+
+*****
+
+2024/09/20 Amine
+1. Done since last scrum
+- Finalized user settings
+- Set up Heroku
+2. Plan until next Scrum
+- Work on orders and order_items
+3. Need assistance / figure things out
+- research how to properly do a transaction with Spring Boot
+
+2024/09/20 Sean
+1. Done since last scrum
+- Admin user editing
+- Began work on Cart(not in db) and CartItem class
+2. Plan until next Scrum
+- Continue working on cart classes
+3. Need assistance / figure things out
+- Stripe implementation
