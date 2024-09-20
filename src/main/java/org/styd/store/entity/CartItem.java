@@ -1,13 +1,13 @@
 package org.styd.store.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Objects;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "cart_items")
 public class CartItem {
@@ -25,4 +25,28 @@ public class CartItem {
     private Product product;
 
     private int amount;
+
+    // FIXME will an issue arise if a cartItem is pulled from db with an id already?
+    // ^May need allargsconstructor
+
+    public CartItem(User buyer, Product product, int amount) {
+        this.buyer = buyer;
+        this.product = product;
+        this.amount = amount;
+    }
+
+    // The methods below enable Set comparison for other purposes in our application
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CartItem)) return false;
+        CartItem cartItem = (CartItem) o;
+        return Objects.equals(getBuyer(), cartItem.getBuyer()) &&
+                Objects.equals(getProduct(), cartItem.getProduct());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBuyer(), getProduct());
+    }
 }
