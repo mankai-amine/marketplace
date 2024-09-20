@@ -15,8 +15,6 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-
 @Table(name = "users")
 public class User {
 
@@ -64,14 +62,12 @@ public class User {
     //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     //private Set<Order> orders;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Set<CartItem> cartItems;
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<CartItem> cartItems;
 
 //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
-
-
 
 }
 
