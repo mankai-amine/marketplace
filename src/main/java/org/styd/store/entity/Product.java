@@ -19,10 +19,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FIXME @JoinColumn ONETOONE
-//    @NotBlank
-//    private Long categoryId;
-
     @NotBlank
     @Size(min = 4, max = 255, message="Product name must be between {min} and {max} characters")
     private String name;
