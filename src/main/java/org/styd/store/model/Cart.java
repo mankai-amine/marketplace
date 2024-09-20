@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.styd.store.entity.CartItem;
+import org.styd.store.entity.Product;
 import org.styd.store.entity.User;
 
 import java.util.List;
@@ -17,5 +18,9 @@ public class Cart {
 
     public void addItem(CartItem item) {
 
+    }
+
+    private boolean checkIfInCart(Product product) {
+        return false;
     }
 }
