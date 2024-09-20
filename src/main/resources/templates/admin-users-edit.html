@@ -20,12 +20,12 @@
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                <input type="password" class="form-control" id="password" th:field="*{password}">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
             <div class="mb-3">
                 <label for="password2" class="form-label">Password confirmation</label>
-                <input type="password" class="form-control" id="password2" th:field="*{password2}" required>
+                <input type="password" class="form-control" id="password2" th:field="*{password2}">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}"></div>
             </div>
             <div class="mb-3">
@@ -52,7 +52,7 @@
                 <input type="hidden" th:field="*{picture}" >
                 <input type="file" id="profilePicture" name="file">
             </div>
-            <button type="submit" class="btn btn-primary" onclick="return confirmSave()">Add User</button>
+            <button type="submit" class="btn btn-primary" onclick="return confirmSave()">Edit User</button>
         </form>
     </div>
 </div>
