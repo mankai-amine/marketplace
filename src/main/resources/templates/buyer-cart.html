@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Product || Single View')}"></head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+
+<div th:if="${cartItems}">
+    <h1>Your Cart</h1>
+    <table class="table table-bordered table-striped" id="productTable">
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Product Description</th>
+            <th>Price</th>
+            <th>Amount</th>
+            <th>Image</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartItem: ${cartItems}">
+            <td th:text="${cartItem.product.name}"></td>
+            <td th:text="${cartItem.product.description}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(cartItem.product.price, 1, 2)}"></td>
+            <td th:text="${cartItem.amount}"></td>
+            <td th:if="${cartItem.product.imageUrl == null}">No image found.</td>
+            <td th:if="${cartItem.product.imageUrl != null}">
+                <img th:src="@{${cartItem.product.imageUrl}}" alt="Product Image" />
+            </td>
+<!--            <td>-->
+<!--                <a th:href="@{/product/{id}(id=${product.id})}" class="btn btn-info">View</a>-->
+
+<!--                <a th:href="@{/seller/edit/{id}(id=${product.id})}" class="btn btn-info">Edit</a>-->
+<!--                <form th:if="${product.isDeleted} == false" th:action="@{/seller/delete/{id}(id=${product.id})}" style="display: inline;">-->
+<!--                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>-->
+<!--                </form>-->
+<!--                <form th:if="${product.isDeleted} == true" th:action="@{/seller/restore/{id}(id=${product.id})}" style="display: inline;">-->
+<!--                    <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to restore this product?')">Restore</button>-->
+<!--                </form>-->
+<!--            </td>-->
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>

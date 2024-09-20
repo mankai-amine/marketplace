@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Product || Single View')}"></head>
 <body>
-<div th:replace="fragments/header"></div>
+<div th:replace="~{fragments/header}"></div>
 
 <div th:if="${message}" class="alert alert-success">
     <p th:text="${message}"></p>
@@ -30,8 +30,17 @@
                 <img th:src="@{${product.imageUrl}}" alt="Product Image" />
             </td>
         </tr>
+        <tr>
+        </tr>
         </tbody>
     </table>
+
+<!--    <form th:action="@{/api/cart/add}" method="post">-->
+<!--        <input type="hidden" name="productId" th:value="${product.id}"/>-->
+<!--        <input type="hidden" name="amount" value="1"/>-->
+<!--        <button type="submit">Add to Cart</button>-->
+<!--    </form>-->
+
     <a th:href="@{/}" class="btn btn-info">Back to All Products</a>
 
     <span th:if="${isSellerEqualUser}">
