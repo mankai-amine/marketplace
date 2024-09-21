@@ -150,3 +150,26 @@
 - Continue working on cart classes
 3. Need assistance / figure things out
 - Stripe implementation
+
+*****
+
+2024/09/21 Amine
+1. Done since last scrum
+- Set up  entities and repositories for orders and order_items 
+- Set up Checkout controller
+2. Plan until next Scrum
+- finish working on Checkout
+- allow users to see their orders
+3. Need assistance / figure things out
+- research how to incorporate Stripe into Payment Service
+
+2024/09/21 Sean
+1. Done since last scrum
+- Set up CartItem entity, CartRepository, most of CartController methods
+- Fixed recursive errors when saving our interrelated objects by editing entity annotations and creating new methods
+2. Plan until next Scrum
+- Finish /add, /remove, /clear functionality for cart, add html elements for users to perform the functions
+- Fix errors that obstruct user flow
+3. Need assistance / figure things out
+- Making sure the application does not experience adverse effects from Entity edits I made
+
