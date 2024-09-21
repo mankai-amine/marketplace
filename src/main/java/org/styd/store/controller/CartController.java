@@ -1,5 +1,6 @@
 package org.styd.store.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +29,13 @@ public class CartController {
     @GetMapping("/get")
     public Set<CartItem> getCart(@AuthenticationPrincipal CustomUserDetails user) {
         if (checkUser(user)) {
-            return user.getUser().getCartItems();
+            Optional<User> optUser = userRepository.findById(user.getId());
+            if (optUser.isPresent()) {
+                User validUser = optUser.get();
+                return validUser.getCartItems();
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
@@ -37,7 +44,6 @@ public class CartController {
     @PostMapping("/add")
     public Set<CartItem> addToCart(@AuthenticationPrincipal CustomUserDetails user,
                                    @RequestParam Long productId, @RequestParam int amount) {
-        System.out.println("hellooooo!");
         if (!checkUser(user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
@@ -50,10 +56,39 @@ public class CartController {
         }
         User validUser = userRepository.findById(user.getId()).get();
         validUser.addToCart(stockCheck, amount);
-        System.out.println("debug buffer");
         userRepository.save(validUser);
 
-        return user.getUser().getCartItems();
+        return validUser.getCartItems();
+    }
+
+    @DeleteMapping("/remove")
+    @Transactional
+    public Set<CartItem> removeFromCart(@AuthenticationPrincipal CustomUserDetails user,
+                                        @RequestParam Long productId) {
+        if (!checkUser(user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        if (!checkProduct(productId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        Product toRemove = productRepository.findById(productId).get();
+        User validUser = userRepository.findById(user.getId()).get();
+
+        validUser.removeFromCart(toRemove);
+        validUser = userRepository.saveAndFlush(validUser);
+
+        return validUser.getCartItems();
+    }
+
+    @DeleteMapping("/clear")
+    public Set<CartItem> clearCart(@AuthenticationPrincipal CustomUserDetails user) {
+        if (!checkUser(user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        User validUser = userRepository.findById(user.getId()).get();
+        validUser.clearCart();
+        userRepository.save(validUser);
+        return validUser.getCartItems();
     }
 
     private boolean checkUser(@AuthenticationPrincipal CustomUserDetails user) {

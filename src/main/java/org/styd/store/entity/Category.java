@@ -1,5 +1,6 @@
 package org.styd.store.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class Category {
     private Boolean isDeleted = false;
 
     // empty Hashset declared to avoid LazyInitilization error
+    @JsonManagedReference
     @OneToMany(mappedBy = "prodCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 }
