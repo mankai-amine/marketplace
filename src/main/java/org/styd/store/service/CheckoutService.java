@@ -1,6 +1,7 @@
 package org.styd.store.service;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +70,7 @@ public class CheckoutService {
         Order order = new Order();
         Long buyerId = buyer.getId();
         order.setBuyer(userRepository.findById(buyerId).orElseThrow(() -> new IllegalArgumentException("User not found")));
-        order.setOrderDate(DateTime.now());
+        order.setOrderDate(LocalDateTime.now());
         Order savedOrder = orderRepository.save(order);
 
 
