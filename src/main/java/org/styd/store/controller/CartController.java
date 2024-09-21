@@ -50,6 +50,7 @@ public class CartController {
         }
         User validUser = userRepository.findById(user.getId()).get();
         validUser.addToCart(stockCheck, amount);
+        System.out.println("debug buffer");
         userRepository.save(validUser);
 
         return user.getUser().getCartItems();

@@ -44,6 +44,7 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category prodCategory;
 
+    // FIXME? this being lazy is not enough to fix stackoverflow by itself
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable=false)
     private User seller;
