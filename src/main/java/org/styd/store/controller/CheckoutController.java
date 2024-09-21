@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.styd.store.entity.User;
 import org.styd.store.exception.InsufficientStockException;
 import org.styd.store.exception.PaymentFailureException;
 import org.styd.store.securingweb.CustomUserDetails;
@@ -18,10 +19,11 @@ public class CheckoutController {
 
     @PostMapping
     public String checkout(@AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirectAttributes) {
-        Long buyerId = currentUser.getId();
+
+        User buyer = currentUser.getUser();
 
         try {
-            checkoutService.processCheckout(buyerId);
+            checkoutService.processCheckout(buyer);
             redirectAttributes.addFlashAttribute("message", "Checkout completed successfully!");
             return "redirect:/";
         } catch (InsufficientStockException | PaymentFailureException e) {

@@ -46,10 +46,10 @@ public class CheckoutService {
 
     // if at any time an exception is thrown, all database operations performed will be rolled back, as if they never happened
     @Transactional(rollbackFor = Exception.class)
-    public void processCheckout(Long buyerId){
+    public void processCheckout(User buyer) throws InsufficientStockException, PaymentFailureException {
 
-        // retrieve cartItems via buyerId
-        List<CartItem> cartItems = cartItemRepository.findByBuyerId(buyerId);
+        // retrieve cartItems related to the buyer
+        List<CartItem> cartItems = cartItemRepository.findByBuyer(buyer);
 
         // verify that every cartItem has enough stock
         for (CartItem cartItem : cartItems) {
@@ -67,6 +67,7 @@ public class CheckoutService {
 
         // create a new order, and assign a buyer_id and orderDate to it
         Order order = new Order();
+        Long buyerId = buyer.getId();
         order.setBuyer(userRepository.findById(buyerId).orElseThrow(() -> new IllegalArgumentException("User not found")));
         order.setOrderDate(DateTime.now());
         Order savedOrder = orderRepository.save(order);
@@ -85,9 +86,8 @@ public class CheckoutService {
             Product product = cartItem.getProduct();
             product.setStockAmount(product.getStockAmount() - cartItem.getAmount());
             productRepository.save(product);
-        }
 
-        // delete the cartItems related to buyerId from the database
-        cartItemRepository.deleteByBuyerId(buyerId);
+            cartItemRepository.delete(cartItem);
+        }
     }
 }
