@@ -14,6 +14,7 @@
             <li><a th:href="@{/}">View all Products</a></li>
             <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/add}">Add a Product</a></li>
             <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_ADMIN'')')}"><a th:href="@{/admin}">Admin main directory</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_BUYER'')')}"><a th:href="@{/buyer/cart}">Your Cart</a></li>
 
 <!--            <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">-->
 <!--        <span th:if="${isSellerEqualUser}">-->

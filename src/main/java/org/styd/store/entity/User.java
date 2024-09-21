@@ -1,10 +1,9 @@
 package org.styd.store.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashSet;
@@ -12,7 +11,9 @@ import java.util.Set;
 
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"products", "cartItems"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
@@ -67,13 +68,15 @@ public class User {
 
 //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
+    @JsonManagedReference
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 
     //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     //private Set<Order> orders;
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems = new HashSet<>();
 
     ///// Cart methods below /////
@@ -90,7 +93,13 @@ public class User {
 
     // this will check to make sure the item is actually in the cart before it goes to remove it
     public void removeFromCart(Product product) {
-        cartItems.removeIf(item -> item.getProduct().equals(product));
+        CartItem itemToRemove = findCartItem(product);
+        if (itemToRemove != null) {
+            cartItems.remove(itemToRemove);
+            // below line makes application remove the orphan to properly delete the CartItem
+            itemToRemove.setBuyer(null);
+        }
+//        cartItems.removeIf(item -> item.getProduct().equals(product));
     }
 
     public void clearCart() {
@@ -110,5 +119,10 @@ public class User {
 //            }
 //        }
 //        return null;
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username='" + username + "', email='" + email + "',}";
+    }
 }
 

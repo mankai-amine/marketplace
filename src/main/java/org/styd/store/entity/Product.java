@@ -1,5 +1,6 @@
 package org.styd.store.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Product {
 
     @Id
@@ -41,10 +41,13 @@ public class Product {
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category prodCategory;
 
+    // FIXME? this being lazy is not enough to fix stackoverflow by itself
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable=false)
     private User seller;

@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.styd.store.entity.Category;
 import org.styd.store.entity.User;
+import org.styd.store.repository.CartItemRepository;
 import org.styd.store.repository.CategoryRepository;
 import org.styd.store.repository.UserRepository;
 import org.styd.store.securingweb.CustomUserDetails;
@@ -36,7 +37,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-  
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     @GetMapping("/register")
     public String viewRegisterPage(Model model){
@@ -145,46 +148,11 @@ public class UserController {
         return "redirect:/";
     }
 
-
-//    // FIXME Turn this into a settings page later
-//    @GetMapping("/users/uploadimgform")
-//    public String uploadImgForm(@AuthenticationPrincipal CustomUserDetails currentUser, Model model,
-//                                RedirectAttributes redirectAttributes){
-//        if (currentUser.getUser() == null){
-//            redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred.");
-//            return "redirect:/";
-//        }
-//
-//        // Temporary solution around product LazyRetrieval error, keeping in case it's needed again
-////        User user = userRepo.findById(currentUser.getUser().getId())
-////                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        // Below code works again with the User class declaring a new empty HashSet<> for products when initialized
-//        model.addAttribute("user", currentUser.getUser());
-//        return "user-image-upload";
-//    }
-//
-//    @PostMapping("/users/{userId}/uploadProfilePicture")
-//    public String uploadProfilePicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails currentUser,
-//                                       RedirectAttributes redirectAttributes) {
-//        if (!currentUser.getUser().getId().equals(userId)) {
-//            redirectAttributes.addFlashAttribute("flashMessageError", "ID mismatch error.");
-//            return "redirect:/";
-//        }
-//        if (file.isEmpty()){
-//            redirectAttributes.addFlashAttribute("flashMessageError", "Please upload a file and try again.");
-//            return "redirect:/";
-//        }
-//        try {
-//            userService.uploadUserProfilePicture(file, userId);
-//            redirectAttributes.addFlashAttribute("flashMessageSuccess", "Profile picture uploaded successfully.");
-////             FIXME more precise exception handling?
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("flashMessageError", "An error occurred while uploading profile picture.");
-//        }
-//
-//        return "redirect:/";
-//    }
+    @GetMapping("buyer/cart")
+    public String viewCart(@AuthenticationPrincipal CustomUserDetails currentUser, Model model){
+        model.addAttribute("cartItems", cartItemRepository.findByBuyer(currentUser.getUser()));
+        return "buyer-cart";
+    }
 
     // Start of admin mapping
 

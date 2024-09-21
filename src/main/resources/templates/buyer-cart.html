@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Product || Single View')}"></head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+
+<div th:if="${cartItems}">
+    <h1>Your Cart</h1>
+    <table class="table table-bordered table-striped" id="productTable">
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Product Description</th>
+            <th>Price</th>
+            <th>Amount</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartItem: ${cartItems}">
+            <td th:text="${cartItem.product.name}"></td>
+            <td th:text="${cartItem.product.description}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(cartItem.product.price, 1, 2)}"></td>
+            <td th:text="${cartItem.amount}"></td>
+            <td th:if="${cartItem.product.imageUrl == null}">No image found.</td>
+            <td th:if="${cartItem.product.imageUrl != null}">
+                <img th:src="@{${cartItem.product.imageUrl}}" alt="Product Image" />
+            </td>
+            <td>
+<!--                <form th:action="@{/api/cart/remove}">-->
+<!--                    <input type="hidden" name="productId" th:value="${cartItem.product.id}"/>-->
+<!--                    <input type="hidden" name="amount" value="1"/>-->
+<!--                    <button onclick="removeFromCart(productId)" type="submit">Remove from Cart</button>-->
+<!--                </form>-->
+                <button th:onclick="'removeFromCart(' + ${cartItem.product.id} + ')'" type="button">Remove from Cart</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button th:onclick="'clearCart()'" type="button">Clear entire Cart</button>
+
+</div>
+<script>
+    function removeFromCart(productId) {
+        fetch(`/api/cart/remove?productId=${productId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Item removed', data);
+                // Reload the page to reflect the updated cart
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function clearCart() {
+        fetch(`/api/cart/clear`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Cart cleared', data);
+                // Reload the page to reflect the updated cart
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+<!--<script>-->
+<!--    function removeFromCart(productId) {-->
+<!--        fetch(`/api/cart/remove?productId=${productId}`, {-->
+<!--            method: 'DELETE',-->
+<!--        })-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                console.log('Item removed', data);-->
+<!--                // Update the cart display-->
+<!--            })-->
+<!--            .catch((error) => {-->
+<!--                console.error('Error:', error);-->
+<!--            });-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>
