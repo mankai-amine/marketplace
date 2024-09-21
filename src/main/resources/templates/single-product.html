@@ -35,11 +35,13 @@
         </tbody>
     </table>
 
-    <form th:action="@{/api/cart/add}" method="post">
+
+    <span>
         <input type="hidden" name="productId" th:value="${product.id}"/>
-        <input type="hidden" name="amount" value="1"/>
-        <button type="submit">Add to Cart</button>
-    </form>
+        <input type="number" name="amountProd" id="amountProd" value=""/>
+        <button th:onclick="'addToCart(' + ${product.id} + ', document.getElementById(\'amountProd\').value)'" type="button">Add to Cart</button>
+    </span>
+
 
     <a th:href="@{/}" class="btn btn-info">Back to All Products</a>
 
@@ -47,26 +49,26 @@
         <a th:href="@{/seller/{sellerId}/products(sellerId=${sellerId})}" class="btn btn-info">Back to Your Products</a>
     </span>
 </div>
-<!--<script>-->
-<!--    function removeFromCart(productId) {-->
-<!--        fetch(`/api/cart/remove?productId=${productId}`, {-->
-<!--            method: 'DELETE',-->
-<!--        })-->
-<!--            .then(response => {-->
-<!--                if (!response.ok) {-->
-<!--                    throw new Error('Network response was not ok');-->
-<!--                }-->
-<!--                return response.json();-->
-<!--            })-->
-<!--            .then(data => {-->
-<!--                console.log('Item removed', data);-->
-<!--                // Reload the page to reflect the updated cart-->
-<!--                location.reload();-->
-<!--            })-->
-<!--            .catch((error) => {-->
-<!--                console.error('Error:', error);-->
-<!--            });-->
-<!--    }-->
-<!--</script>-->
+<script>
+    function addToCart(productId, amountProd) {
+        fetch(`/api/cart/add?productId=${productId}&amount=${amountProd}`, {
+            method: 'POST',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Item added', data);
+                // Reload the page to reflect the updated cart
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+</script>
 </body>
 </html>
