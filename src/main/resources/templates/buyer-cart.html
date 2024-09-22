@@ -40,6 +40,11 @@
     </table>
     <button th:onclick="'clearCart()'" type="button">Clear entire Cart</button>
 
+    <form th:action="@{/buyer/checkout}" method="post">
+        <button type="submit">Checkout</button>
+    </form>
+
+
 </div>
 <script>
     function removeFromCart(productId) {

@@ -59,6 +59,14 @@ public class User {
     //@Pattern(regexp = "\\d*", message = "Credit card number must contain only digits")
     private String creditCard;
 
+
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();;
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Set<CartItem> cartItems;
+
+//  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @JsonManagedReference
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
