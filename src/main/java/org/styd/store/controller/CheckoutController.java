@@ -28,10 +28,10 @@ public class CheckoutController {
             return "redirect:/";
         } catch (InsufficientStockException | PaymentFailureException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/buyer/cart";
+            return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Checkout failed.");
-            return "redirect:/buyer/cart";
+            return "redirect:/";
         }
     }
 

@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +27,9 @@ public class Order {
     @Column(name = "shipment_address")
     private String shipmentAddress;
 
-    @Column(name = "order_date")
+    //@Column(name = "order_date", columnDefinition = "DATE")
+    //private LocalDate orderDate ;
+    @Column(name = "order_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime orderDate;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

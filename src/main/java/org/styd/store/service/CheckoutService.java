@@ -1,7 +1,5 @@
 package org.styd.store.service;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +8,7 @@ import org.styd.store.exception.InsufficientStockException;
 import org.styd.store.exception.PaymentFailureException;
 import org.styd.store.repository.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -66,13 +65,13 @@ public class CheckoutService {
             throw new PaymentFailureException("Payment failed");
         }
 
-        // create a new order, and assign a buyer_id and orderDate to it
+        // create a new order, and assign a buyer_id, orderDate and shipment address to it
         Order order = new Order();
-        Long buyerId = buyer.getId();
-        order.setBuyer(userRepository.findById(buyerId).orElseThrow(() -> new IllegalArgumentException("User not found")));
+        order.setBuyer(buyer);
         order.setOrderDate(LocalDateTime.now());
+        order.setShipmentAddress(buyer.getAddress());
         Order savedOrder = orderRepository.save(order);
-
+        double totalPrice=0;
 
         for (CartItem cartItem : cartItems) {
             // for each cartItem, create an orderItem and populate it with order, productId, price and amount
@@ -88,7 +87,12 @@ public class CheckoutService {
             product.setStockAmount(product.getStockAmount() - cartItem.getAmount());
             productRepository.save(product);
 
+            totalPrice += cartItem.getAmount()*cartItem.getProduct().getPrice();
+
             cartItemRepository.delete(cartItem);
         }
+
+        order.setTotalPrice(totalPrice);
+        orderRepository.save(order);
     }
 }
