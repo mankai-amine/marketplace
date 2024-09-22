@@ -41,9 +41,13 @@ public class CartController {
         }
     }
 
+    // TODO incorporate insufficientstockexception?
     @PostMapping("/add")
     public Set<CartItem> addToCart(@AuthenticationPrincipal CustomUserDetails user,
                                    @RequestParam Long productId, @RequestParam int amount) {
+        if (amount <= 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be at least 1.");
+        }
         if (!checkUser(user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
@@ -61,6 +65,27 @@ public class CartController {
         return validUser.getCartItems();
     }
 
+    @PostMapping("/add/button")
+    public Set<CartItem> addToCartButton(@AuthenticationPrincipal CustomUserDetails user,
+                                         @RequestParam Long productId) {
+        if (!checkUser(user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        if (!checkProduct(productId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        Product stockCheck = productRepository.findById(productId).get();
+        if ((stockCheck.getStockAmount() - 1) < 0) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not enough product in stock");
+        }
+        User validUser = userRepository.findById(user.getId()).get();
+        validUser.addToCart(stockCheck, 1);
+        userRepository.save(validUser);
+
+        return validUser.getCartItems();
+    }
+
+    // transactional to make sure the cart item deletion and user save are atomic
     @DeleteMapping("/remove")
     @Transactional
     public Set<CartItem> removeFromCart(@AuthenticationPrincipal CustomUserDetails user,
@@ -75,6 +100,25 @@ public class CartController {
         User validUser = userRepository.findById(user.getId()).get();
 
         validUser.removeFromCart(toRemove);
+        validUser = userRepository.saveAndFlush(validUser);
+
+        return validUser.getCartItems();
+    }
+
+    @DeleteMapping("/remove/button")
+    @Transactional
+    public Set<CartItem> removeFromCartButton(@AuthenticationPrincipal CustomUserDetails user,
+                                              @RequestParam Long productId) {
+        if (!checkUser(user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        if (!checkProduct(productId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        Product toRemove = productRepository.findById(productId).get();
+        User validUser = userRepository.findById(user.getId()).get();
+
+        validUser.removeOneFromCart(toRemove);
         validUser = userRepository.saveAndFlush(validUser);
 
         return validUser.getCartItems();

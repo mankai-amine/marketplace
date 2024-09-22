@@ -102,6 +102,19 @@ public class User {
 //        cartItems.removeIf(item -> item.getProduct().equals(product));
     }
 
+    public void removeOneFromCart(Product product) {
+        CartItem itemToRemove = findCartItem(product);
+        if (itemToRemove != null) {
+            if (itemToRemove.getAmount() > 1){
+                itemToRemove.setAmount(itemToRemove.getAmount() - 1);
+                // TODO is above enough, or do I need to ref object differently?
+            } else {
+                cartItems.remove(itemToRemove);
+                itemToRemove.setBuyer(null);
+            }
+        }
+    }
+
     public void clearCart() {
         cartItems.clear();
     }

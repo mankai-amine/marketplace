@@ -33,7 +33,9 @@
 <!--                    <input type="hidden" name="amount" value="1"/>-->
 <!--                    <button onclick="removeFromCart(productId)" type="submit">Remove from Cart</button>-->
 <!--                </form>-->
-                <button th:onclick="'removeFromCart(' + ${cartItem.product.id} + ')'" type="button">Remove from Cart</button>
+                <button th:onclick="'addToCartButton(' + ${cartItem.product.id} + ')'" type="button">Add One</button>
+                <button th:onclick="'removeFromCartButton(' + ${cartItem.product.id} + ')'" type="button">Remove One</button>
+                <button th:onclick="'removeFromCart(' + ${cartItem.product.id} + ')'" type="button">Remove all from Cart</button>
             </td>
         </tr>
         </tbody>
@@ -47,6 +49,46 @@
 
 </div>
 <script>
+    function addToCartButton(productId) {
+        fetch(`/api/cart/add/button?productId=${productId}`, {
+            method: 'POST',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('One Item Added', data);
+                // Reload the page to reflect the updated cart
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function removeFromCartButton(productId) {
+        fetch(`/api/cart/remove/button?productId=${productId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('One Item Removed', data);
+                // Reload the page to reflect the updated cart
+                location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
     function removeFromCart(productId) {
         fetch(`/api/cart/remove?productId=${productId}`, {
             method: 'DELETE',
