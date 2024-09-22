@@ -71,6 +71,7 @@ public class CheckoutService {
         order.setOrderDate(LocalDateTime.now());
         order.setShipmentAddress(buyer.getAddress());
         Order savedOrder = orderRepository.save(order);
+
         double totalPrice=0;
 
         for (CartItem cartItem : cartItems) {

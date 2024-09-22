@@ -41,6 +41,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/register", "/process_register", "/product/**").permitAll()
                         .requestMatchers("/users/**", "/api/**").authenticated()
+                        .requestMatchers("/orders", "/order/**").hasAnyRole("ADMIN", "BUYER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/buyer/**").hasRole("BUYER")
                         .requestMatchers("/seller/**").hasRole("SELLER")
