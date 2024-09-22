@@ -55,10 +55,11 @@ public class CartController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }
         Product stockCheck = productRepository.findById(productId).get();
-        if ((stockCheck.getStockAmount() - amount) < 0) {
+        User validUser = userRepository.findById(user.getId()).get();
+        int cartAmount = validUser.checkAmount(stockCheck);
+        if ((stockCheck.getStockAmount() - (amount + cartAmount)) < 0) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not enough product in stock");
         }
-        User validUser = userRepository.findById(user.getId()).get();
         validUser.addToCart(stockCheck, amount);
         userRepository.save(validUser);
 
@@ -75,10 +76,16 @@ public class CartController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }
         Product stockCheck = productRepository.findById(productId).get();
-        if ((stockCheck.getStockAmount() - 1) < 0) {
+        User validUser = userRepository.findById(user.getId()).get();
+        int cartAmount = validUser.checkAmount(stockCheck);
+
+        if (cartAmount <= 0) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Item was not found in cart.");
+        }
+        if ((stockCheck.getStockAmount() - 1) < cartAmount) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not enough product in stock");
         }
-        User validUser = userRepository.findById(user.getId()).get();
+
         validUser.addToCart(stockCheck, 1);
         userRepository.save(validUser);
 
@@ -118,6 +125,7 @@ public class CartController {
         Product toRemove = productRepository.findById(productId).get();
         User validUser = userRepository.findById(user.getId()).get();
 
+        // call removeOneFromCart method instead
         validUser.removeOneFromCart(toRemove);
         validUser = userRepository.saveAndFlush(validUser);
 

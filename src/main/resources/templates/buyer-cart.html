@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('Product || Single View')}"></head>
+<head th:replace="~{fragments/head :: head('Your Cart')}"></head>
 <body>
 <div th:replace="~{fragments/header}"></div>
+<div id="cartNotif"></div>
 
 <div th:if="${cartItems}">
     <h1>Your Cart</h1>
@@ -22,7 +23,7 @@
             <td th:text="${cartItem.product.name}"></td>
             <td th:text="${cartItem.product.description}"></td>
             <td th:text="'$' + ${#numbers.formatDecimal(cartItem.product.price, 1, 2)}"></td>
-            <td th:text="${cartItem.amount}"></td>
+            <td th:id="'cartAmount' + ${cartItem.product.id}" th:text="${cartItem.amount}"></td>
             <td th:if="${cartItem.product.imageUrl == null}">No image found.</td>
             <td th:if="${cartItem.product.imageUrl != null}">
                 <img th:src="@{${cartItem.product.imageUrl}}" alt="Product Image" />
@@ -34,7 +35,9 @@
 <!--                    <button onclick="removeFromCart(productId)" type="submit">Remove from Cart</button>-->
 <!--                </form>-->
                 <button th:onclick="'addToCartButton(' + ${cartItem.product.id} + ')'" type="button">Add One</button>
-                <button th:onclick="'removeFromCartButton(' + ${cartItem.product.id} + ')'" type="button">Remove One</button>
+                <button th:id="'removeButton' + ${cartItem.product.id}"
+                        th:onclick="'removeFromCartButton(' + ${cartItem.product.id} + ')'"
+                        type="button">Remove One</button>
                 <button th:onclick="'removeFromCart(' + ${cartItem.product.id} + ')'" type="button">Remove all from Cart</button>
             </td>
         </tr>
@@ -49,6 +52,39 @@
 
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const cartAmountElements = document.querySelectorAll('[id^="cartAmount"]');
+
+        cartAmountElements.forEach(function(cartAmountElement) {
+            let cartAmountInt = parseInt(cartAmountElement.textContent);
+
+            let productId = cartAmountElement.id.replace('cartAmount', '');
+
+            let removeButton = document.getElementById('removeButton' + productId);
+
+            if (cartAmountInt <= 1) {
+                removeButton.disabled = true;
+            }
+        });
+    });
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} notification`;
+        notification.textContent = message;
+
+        let messageAppend = document.getElementById('cartNotif');
+        messageAppend.appendChild(notification)
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                messageAppend.removeChild(notification);
+            }, 500);
+        }, 3000);
+    }
+
     function addToCartButton(productId) {
         fetch(`/api/cart/add/button?productId=${productId}`, {
             method: 'POST',
@@ -61,11 +97,22 @@
             })
             .then(data => {
                 console.log('One Item Added', data);
-                // Reload the page to reflect the updated cart
-                location.reload();
+                let cartAmountEdit = document.getElementById('cartAmount' + productId);
+                let cartAmountInt = parseInt(cartAmountEdit.textContent);
+                cartAmountInt += 1;
+                cartAmountEdit.textContent = cartAmountInt;
+
+                let disableRemoveButton = document.getElementById('removeButton' + productId);
+                if (cartAmountInt <= 1) {
+                    disableRemoveButton.disabled = true;
+                } else {
+                    disableRemoveButton.disabled = false;
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);
+                showNotification('Failed to add item to cart. Make sure there\'s enough' +
+                    ' in stock.', 'danger');
             });
     }
 
@@ -81,11 +128,21 @@
             })
             .then(data => {
                 console.log('One Item Removed', data);
-                // Reload the page to reflect the updated cart
-                location.reload();
+                let cartAmountEdit = document.getElementById('cartAmount' + productId);
+                let cartAmountInt = parseInt(cartAmountEdit.textContent);
+                cartAmountInt -= 1;
+                cartAmountEdit.textContent = cartAmountInt;
+
+                let disableRemoveButton = document.getElementById('removeButton' + productId);
+                if (cartAmountInt <= 1) {
+                    disableRemoveButton.disabled = true;
+                } else {
+                    disableRemoveButton.disabled = false;
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);
+                showNotification('Failed to remove item from cart.', 'danger');
             });
     }
 
@@ -106,6 +163,7 @@
             })
             .catch((error) => {
                 console.error('Error:', error);
+                showNotification('Failed to remove item from cart.', 'danger');
             });
     }
 
@@ -126,24 +184,9 @@
             })
             .catch((error) => {
                 console.error('Error:', error);
+                showNotification('Failed to clear cart.', 'danger');
             });
     }
 </script>
-
-<!--<script>-->
-<!--    function removeFromCart(productId) {-->
-<!--        fetch(`/api/cart/remove?productId=${productId}`, {-->
-<!--            method: 'DELETE',-->
-<!--        })-->
-<!--            .then(response => response.json())-->
-<!--            .then(data => {-->
-<!--                console.log('Item removed', data);-->
-<!--                // Update the cart display-->
-<!--            })-->
-<!--            .catch((error) => {-->
-<!--                console.error('Error:', error);-->
-<!--            });-->
-<!--    }-->
-<!--</script>-->
 </body>
 </html>

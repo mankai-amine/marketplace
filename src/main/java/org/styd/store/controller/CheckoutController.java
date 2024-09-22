@@ -24,13 +24,13 @@ public class CheckoutController {
 
         try {
             checkoutService.processCheckout(buyer);
-            redirectAttributes.addFlashAttribute("message", "Checkout completed successfully!");
+            redirectAttributes.addFlashAttribute("flashMessageSuccess", "Checkout completed successfully!");
             return "redirect:/";
         } catch (InsufficientStockException | PaymentFailureException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("flashMessageError", e.getMessage());
             return "redirect:/buyer/cart";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Checkout failed.");
+            redirectAttributes.addFlashAttribute("flashMessageError", "Checkout failed.");
             return "redirect:/buyer/cart";
         }
     }

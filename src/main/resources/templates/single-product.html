@@ -4,6 +4,7 @@
 <body>
 <div th:replace="~{fragments/header}"></div>
 
+<div id="cartNotif"></div>
 <div th:if="${message}" class="alert alert-success">
     <p th:text="${message}"></p>
 </div>
@@ -52,6 +53,22 @@
     </span>
 </div>
 <script>
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} notification`;
+        notification.textContent = message;
+
+        let messageAppend = document.getElementById('cartNotif');
+        messageAppend.appendChild(notification)
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                messageAppend.removeChild(notification);
+            }, 500);
+        }, 3000);
+    }
+
     function addToCart(productId, amountProd) {
         fetch(`/api/cart/add?productId=${productId}&amount=${amountProd}`, {
             method: 'POST',
@@ -64,11 +81,11 @@
             })
             .then(data => {
                 console.log('Item added', data);
-                // Reload the page to reflect the updated cart
-                location.reload();
+                showNotification('Item successfully added to cart!')
             })
             .catch((error) => {
                 console.error('Error:', error);
+                showNotification('Failed to add item to cart.', 'danger');
             });
     }
 </script>
