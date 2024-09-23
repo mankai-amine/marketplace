@@ -46,9 +46,6 @@
         <button th:onclick="'addToCart(' + ${product.id} + ', document.getElementById(\'amountProd\').value)'" type="button">Add to Cart</button>
     </span>
 
-    <span th:if="${isSellerEqualUser}">
-        <a th:href="@{/seller/{sellerId}/products(sellerId=${sellerId})}" class="btn btn-info">Back to Your Products</a>
-    </span>
 </div>
 <script src="/single-product.js"></script>
 </body>

@@ -17,9 +17,9 @@
 
 
 <div class="container">
+    <h1 class="roboto-bold">List of Products</h1>
 
     <div class="product-container mt-5">
-    <h1 class="roboto-bold">List of Products</h1>
 
     <div class="product-container">
         <div th:each="product, iterStat: ${products}" th:if="${product.stockAmount > 0}" class="product-box">
@@ -50,6 +50,6 @@
 <div th:if="${products == null || #lists.isEmpty(products)}">
     <p>No Products available at the moment.</p>
 </div>
-
+</div>
 </body>
 </html>

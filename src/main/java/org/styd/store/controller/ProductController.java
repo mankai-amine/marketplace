@@ -96,8 +96,8 @@ public class ProductController {
                 model.addAttribute("currentUserId", toShow.getId());
             }
         }
-
-        return "index";
+        return "your-products";
+        //return "index";
     }
 
     @GetMapping({"/seller/add"})
@@ -153,7 +153,7 @@ public class ProductController {
         productRepository.save(toDelete);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product deleted successfully");
 
-        return "redirect:/seller/" + urlInsert + "/products";
+        return "redirect:/seller/your-products";
     }
 
     @GetMapping("/seller/restore/{prodId}")
@@ -174,7 +174,7 @@ public class ProductController {
         prodToRestore.setIsDeleted(false);
         productRepository.save(prodToRestore);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product restored successfully");
-        return "redirect:/seller/" + urlInsert + "/products";
+        return "redirect:/seller/your-products";
     }
 
     @PostMapping("/seller/saveProduct")
@@ -213,7 +213,7 @@ public class ProductController {
 
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Product saved successfully");
 
-        return "redirect:/seller/" + urlInsert + "/products";
+        return "redirect:/seller/your-products";
     }
 
 
