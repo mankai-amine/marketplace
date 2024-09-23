@@ -20,6 +20,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // in each order item, we just have 1 product
     @Column(name = "product_id")
     private Long productId;
 
