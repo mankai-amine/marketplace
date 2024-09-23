@@ -36,6 +36,26 @@
     align-items: center;
     position: relative;
     min-height: 300px;
+    text-align: center;
+    font-size: larger;
+}
+
+.order-details {
+    flex-basis: calc(50% - 10px);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+    box-sizing: border-box;
+    background-color: #FEF9D9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 300px;
+    text-align: center;
+    font-size: x-large;
 }
 
 .product-container {
@@ -66,9 +86,15 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-.product-box h2 {
+.product-box h2, .order-box h2, .order-details h2 {
     margin-top: 0;
     color: #333;
+    text-align: center;
+}
+
+.order-box p, .order-details p {
+    color: #666;
+    font-family: Arial, sans-serif;
     text-align: center;
 }
 
@@ -79,16 +105,16 @@
     width: 100%;
 }
 
-.product-box .price {
+.product-box .price, .order-box .price, .order-details .price {
     font-weight: bold;
     font-size: 1.2em;
     margin: 10px 0;
     text-align: center;
 }
 
-.product-box img {
+.product-box img, .order-box img {
     box-shadow: 10px 10px 15px 5px #333333;
-    max-height: 250px;
+    max-height: 240px;
     max-width: 300px;
     height: auto;
     border-radius: 4px;
@@ -106,7 +132,7 @@
 
 .product-actions .btn {
     padding-top: 10px;
-    margin: 5px;
+    margin: -5px;
     font-family: 'Montserrat', sans-serif;
 }
 /*809BCE*/
