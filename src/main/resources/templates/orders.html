@@ -6,11 +6,11 @@
 <div th:replace="~{fragments/header}"></div>
 
 <div class="container">
-    <h1>Orders</h1>
+    <h1 class="roboto-bold">Your completed orders</h1>
     <div class="product-container">
-        <div th:each="order, iterStat: ${orders}" class="product-box">
-            <h2 th:text="${order.id}"></h2>
-            <p th:text="${order.orderDate}"></p>
+        <div th:each="order, iterStat: ${orders}" class="order-box">
+            <h2 th:text="${order.id}" class="roboto-bold"></h2>
+            <p th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd || HH:mm:ss')}"></p>
             <p th:text="${order.shipmentAddress}"></p>
             <p class="price" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></p>
 

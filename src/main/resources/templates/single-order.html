@@ -5,24 +5,17 @@
 <div th:replace="~{fragments/header}"></div>
 
 <div class="container">
+    <h1 class="roboto-bold">Order Details</h1>
+    <div class="product-container">
+        <div th:each="orderItemWithName: ${orderItemsWithNames}" class="order-details">
+            <h2 th:text="${orderItemWithName.get('productName')}" class="roboto-bold"></h2>
+            <p th:text="${orderItemWithName.get('orderItem').amount}"></p>
 
-    <h1>Order Details</h1>
-    <table class="table table-bordered table-striped" id="orderItemTable">
-        <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>Amount</th>
-            <th>Unit Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="orderItemWithName: ${orderItemsWithNames}">
-            <td th:text="${orderItemWithName.get('productName')}"></td>
-            <td th:text="${orderItemWithName.get('orderItem').amount}"></td>
-            <td th:text="${orderItemWithName.get('orderItem').price}"></td>
-        </tr>
-        </tbody>
-    </table>
+            <p class="price" th:text="'$' + ${#numbers.formatDecimal(orderItemWithName.get('orderItem').price, 1, 2)}"></p>
+
+        </div>
+    </div>
+
     <a th:href="@{/orders}" class="btn btn-info">Back to All Orders</a>
 </div>
 </body>
