@@ -23,7 +23,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-// TODO review which data members and auto wired fields are necessary
 @Slf4j
 @Controller
 public class ProductController {
@@ -50,6 +49,14 @@ public class ProductController {
 
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         model.addAttribute("currentUserId", currentUserId);
+
+        if (currentUserId != null) {
+            Optional<User> toCheck = userRepository.findById(currentUserId);
+            if (toCheck.isPresent()) {
+                User toShow = toCheck.get();
+                model.addAttribute("user", toShow);
+            }
+        }
 
         return "index";
     }

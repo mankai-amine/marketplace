@@ -6,11 +6,11 @@
 <div th:replace="~{fragments/header}"></div>
 <div th:if="${#authorization.expression('isAuthenticated()')}"><a th:href="@{/users/settings}">Account settings</a></div>
 
-<!--<div th:if="${#authorization.expression('isAuthenticated()')}">-->
-<!--    <span th:if="${}">-->
-<!--        <img th:src="@{${user.imageUrl}}" alt="User Image" />-->
-<!--    </span>-->
-<!--</div>-->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <span th:if="${user.picture}">
+        <img th:src="@{${user.picture}}" alt="User Image" style="width:100px;height:100px" />
+    </span>
+</div>
 
 <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/orderItems}">Orders on your Products</a></div>
 
@@ -40,7 +40,7 @@
         </thead>
         <tbody>
         <tr th:each="product: ${products}" th:if="${product.stockAmount > 0}">
-            <td th:text="${product.name}"></td>
+            <td th:text="${product.name}" style="font-family:'Roboto', sans-serif; font-weight: 700;"></td>
             <td th:text="${product.description}"></td>
             <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
             <td th:if="${product.imageUrl == null}">No image found.</td>
