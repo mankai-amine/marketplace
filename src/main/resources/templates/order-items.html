@@ -12,8 +12,7 @@
 
 <div class="container">
 
-    <h1>Items Sold</h1>
-    <table class="table table-bordered table-striped" id="orderItemTable">
+    <table class="table table-bordered table-striped mt-5" id="orderItemTable">
         <thead>
         <tr>
             <th>Order ID</th>
@@ -31,11 +30,9 @@
         </tr>
         </tbody>
     </table>
-</div>
-
-
-<div th:if="${orderItems == null || #lists.isEmpty(orderItems)}">
-    <p>No Orders Items available at the moment.</p>
+    <div th:if="${orderItems == null || #lists.isEmpty(orderItems)}">
+        <p>You have no sales yet.</p>
+    </div>
 </div>
 
 </body>

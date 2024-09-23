@@ -5,8 +5,17 @@
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}">
+                    <a class="nav-link" th:href="@{/users/settings}">Account Settings</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/}">View all Products</a>
+                </li>
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">
+                    <a class="nav-link" th:href="@{/seller/your-products}">View Your Products</a>
+                </li>
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">
+                    <a class="nav-link" th:href="@{/seller/orderItems}">Your Sales</a>
                 </li>
                 <li class="nav-item" th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">
                     <a class="nav-link" th:href="@{/seller/add}">Add a Product</a>

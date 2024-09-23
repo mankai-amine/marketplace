@@ -3,13 +3,12 @@
 <head th:replace="~{fragments/head :: head('Add Product')}"></head>
 
 
-<body class="d-flex align-items-center justify-content-center">
+<body >
+<div th:replace="~{fragments/header}"></div>
 
-<div class="container my-5">
+<div class="container my-5 d-flex align-items-center justify-content-center">
 
     <form th:action="@{/seller/saveProduct}" th:object="${product}" method="post" class="form col-5 mx-auto" enctype="multipart/form-data">
-
-        <h2 class="text-center mb-3">Create a product</h2>
 
         <div class="form-group mb-3">
             <label for="category">Category</label>
@@ -62,7 +61,6 @@
 
     </form>
     <hr/>
-    <a th:href="@{/}">Back to list</a>
 </div>
 </body>
 </html>

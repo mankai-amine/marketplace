@@ -3,6 +3,7 @@ package org.styd.store.controller;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.styd.store.entity.User;
 import org.styd.store.repository.CategoryRepository;
 import org.styd.store.repository.ProductRepository;
 import org.styd.store.repository.UserRepository;
+import org.styd.store.securingweb.CustomUserDetails;
 import org.styd.store.securingweb.CustomUserDetailsService;
 import org.styd.store.service.ProductService;
 
@@ -77,23 +79,21 @@ public class ProductController {
         return "single-product";
     }
 
-    @GetMapping({"/seller/{sellerId}/products"})
-    public String viewOwnProducts(Model model, Principal principal, @PathVariable Long sellerId) {
-
-        boolean isSellerEqualUser = checkSellerEqualUser(principal, sellerId);
-
-        List<Product> products = productRepository.findBySellerId(sellerId);
-        model.addAttribute("products", products);
-        model.addAttribute("isSellerEqualUser", isSellerEqualUser);
+    @GetMapping({"/seller/your-products"})
+    public String viewOwnProducts(Model model) {
 
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         model.addAttribute("currentUserId", currentUserId);
+
+        List<Product> products = productRepository.findBySellerId(currentUserId);
+        model.addAttribute("products", products);
 
         if (currentUserId != null) {
             Optional<User> toCheck = userRepository.findById(currentUserId);
             if (toCheck.isPresent()) {
                 User toShow = toCheck.get();
                 model.addAttribute("user", toShow);
+                model.addAttribute("currentUserId", toShow.getId());
             }
         }
 
