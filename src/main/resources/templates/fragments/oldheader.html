@@ -1,0 +1,30 @@
+<header th:fragment="header">
+    <nav>
+        <img th:src="@{/CartLogo.jpg}" alt="logo" style="width:50px;height:50px">
+        <div>
+    <span sec:authorize="isAnonymous()">
+        Welcome! Please <a th:href="@{/login}">log in</a>
+        or <a th:href="@{/register}">register with us</a>.
+    </span>
+            <span sec:authorize="isAuthenticated()">
+        Welcome, <span sec:authentication="name">
+    </span>!
+        <a th:href="@{/logout}" class="btn btn-danger p-2">Logout</a>
+    </span>
+        </div>
+        <ul>
+            <li><a th:href="@{/}">View all Products</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/add}">Add a Product</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_ADMIN'')')}"><a th:href="@{/admin}">Admin main directory</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_BUYER'')')}"><a th:href="@{/buyer/cart}">Your Cart</a></li>
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_BUYER'')')}"><a th:href="@{/orders}">Your Orders</a></li>
+        </ul>
+    </nav>
+    <div th:if="${flashMessageSuccess}" class="alert alert-success">
+        <p th:text="${flashMessageSuccess}"></p>
+    </div>
+    <div th:if="${flashMessageError}" class="alert alert-danger">
+        <p th:text="${flashMessageError}"></p>
+    </div>
+
+</header>
