@@ -12,6 +12,8 @@
 <!--    </span>-->
 <!--</div>-->
 
+<div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/orderItems}">Orders on your Products</a></div>
+
 <div th:if="${message}" class="alert alert-success">
     <p th:text="${message}"></p>
 </div>

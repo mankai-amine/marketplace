@@ -3,7 +3,6 @@ package org.styd.store.controller;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -383,6 +382,6 @@ public class UserController {
 
     @GetMapping("/admin/orders")
     public String adminOrders(){
-        return "admin-orders";
+        return "DEPRECATEDadmin-orders";
     }
 }
