@@ -8,6 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.styd.store.entity.User;
 import org.styd.store.exception.InsufficientStockException;
 import org.styd.store.exception.PaymentFailureException;
+import org.styd.store.repository.UserRepository;
 import org.styd.store.securingweb.CustomUserDetails;
 import org.styd.store.service.CheckoutService;
 
@@ -17,10 +18,15 @@ public class CheckoutController {
     @Autowired
     private CheckoutService checkoutService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("/buyer/checkout")
     public String checkout(@AuthenticationPrincipal CustomUserDetails currentUser, RedirectAttributes redirectAttributes) {
 
-        User buyer = currentUser.getUser();
+        Long id = currentUser.getId();
+        User buyer = userRepository.findById(id).get();
+//        User buyer = currentUser.getUser();
 
         try {
             checkoutService.processCheckout(buyer);

@@ -50,6 +50,13 @@ public class CheckoutService {
 
         // retrieve cartItems related to the buyer
         List<CartItem> cartItems = cartItemRepository.findByBuyer(buyer);
+        if (cartItems.isEmpty()) {
+            throw new InsufficientStockException("No items in cart");
+        }
+
+        if (buyer.getCreditCard() == null || buyer.getAddress() == null || buyer.getAddress().isEmpty()) {
+            throw new PaymentFailureException("Please ensure you have a credit card and address set before checking out.");
+        }
 
         // verify that every cartItem has enough stock
         for (CartItem cartItem : cartItems) {

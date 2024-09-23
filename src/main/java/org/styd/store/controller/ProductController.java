@@ -63,9 +63,13 @@ public class ProductController {
         return "index";
     }
 
-    // FIXME Null Pointer error if product doesn't exist
     @GetMapping("/product/{prodId}")
-    public String viewProduct(@PathVariable Long prodId, Model model, Principal principal) {
+    public String viewProduct(@PathVariable Long prodId, Model model, Principal principal,
+                                RedirectAttributes redirectAttributes) {
+        if (productRepository.findProductById(prodId) == null) {
+            redirectAttributes.addFlashAttribute("flashMessageError", "Product not found");
+            return "redirect:/";
+        }
         Product product = productRepository.findProductById(prodId);
 
         model.addAttribute("product", product);

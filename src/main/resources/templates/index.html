@@ -11,13 +11,10 @@
     </span>
 </div>
 
-<div th:if="${message}" class="alert alert-success">
-    <p th:text="${message}"></p>
-</div>
-
+<div th:replace="~{fragments/flash-messages}"></div>
 
 <div class="container">
-    <h1 class="roboto-bold">List of Products</h1>
+    <h1 class="roboto-bold text-center">List of Products</h1>
 
     <div class="product-container mt-5">
 
@@ -33,7 +30,7 @@
             <div class="product-actions">
                 <a th:href="@{/product/{id}(id=${product.id})}" class="btn btn-info">View</a>
 
-                <span th:if="${isSellerEqualUser}">
+                <div th:if="${isSellerEqualUser}">
                     <a th:href="@{/seller/edit/{id}(id=${product.id})}" class="btn btn-info">Edit</a>
                     <form th:if="${product.isDeleted} == false" th:action="@{/seller/delete/{id}(id=${product.id})}" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
@@ -41,7 +38,7 @@
                     <form th:if="${product.isDeleted} == true" th:action="@{/seller/restore/{id}(id=${product.id})}" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to restore this product?')">Restore</button>
                     </form>
-                </span>
+                </div>
             </div>
         </div>
     </div>
