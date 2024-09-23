@@ -15,13 +15,7 @@
             <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/add}">Add a Product</a></li>
             <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_ADMIN'')')}"><a th:href="@{/admin}">Admin main directory</a></li>
             <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_BUYER'')')}"><a th:href="@{/buyer/cart}">Your Cart</a></li>
-
-<!--            <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">-->
-<!--        <span th:if="${isSellerEqualUser}">-->
-<!--            <a th:href="@{/seller/add}" class="btn btn-info">Add a product</a>-->
-<!--        </span>-->
-<!--                <a th:href="@{/seller/{currentUserId}/products(currentUserId=${currentUserId})}" class="btn btn-info">View Your Products</a>-->
-<!--            </div>-->
+            <li th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_BUYER'')')}"><a th:href="@{/orders}">Your Cart</a></li>
         </ul>
     </nav>
     <div th:if="${flashMessageSuccess}" class="alert alert-success">

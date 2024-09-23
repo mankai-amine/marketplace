@@ -63,9 +63,6 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Set<CartItem> cartItems;
-
 //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @JsonManagedReference
@@ -99,7 +96,26 @@ public class User {
             // below line makes application remove the orphan to properly delete the CartItem
             itemToRemove.setBuyer(null);
         }
-//        cartItems.removeIf(item -> item.getProduct().equals(product));
+    }
+
+    public int checkAmount(Product product) {
+        CartItem itemToCheck = findCartItem(product);
+        if (itemToCheck != null) {
+            return itemToCheck.getAmount();
+        }
+        return 0;
+    }
+
+    public void removeOneFromCart(Product product) {
+        CartItem itemToRemove = findCartItem(product);
+        if (itemToRemove != null) {
+            if (itemToRemove.getAmount() > 1){
+                itemToRemove.setAmount(itemToRemove.getAmount() - 1);
+            } else {
+                cartItems.remove(itemToRemove);
+                itemToRemove.setBuyer(null);
+            }
+        }
     }
 
     public void clearCart() {
