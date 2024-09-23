@@ -1,0 +1,116 @@
+.roboto-regular {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.roboto-bold {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.roboto-regular-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.roboto-bold-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+.product-box {
+    flex-basis: calc(50% - 10px);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+    box-sizing: border-box;
+    background-color: #D2E0FB; /* Light blue from the palette */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 500px; /* Adjust as needed */
+}
+
+.product-box:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.product-box h2 {
+    margin-top: 0;
+    color: #333;
+    text-align: center;
+}
+
+.product-box p {
+    color: #666;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    width: 100%;
+}
+
+.product-box .price {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.product-box img {
+    /*max-width: 100%;*/
+    max-height: 250px;
+    max-width: 300px;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.product-actions {
+    margin-top: 15px;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.product-actions .btn {
+    padding-top: 10px;
+    margin: 5px;
+    font-family: 'Montserrat', sans-serif;
+}
+/*809BCE*/
+.btn-info {
+    background-color: #809BCE;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+/*5D7CA6*/
+.btn-info:hover {
+    background-color: #8EACCD; /* Darker shade of the blue */
+}
+
+@media (max-width: 768px) {
+    .product-box {
+        flex-basis: 100%;
+    }
+}
