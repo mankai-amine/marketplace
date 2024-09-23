@@ -27,8 +27,6 @@ public class Order {
     @Column(name = "shipment_address")
     private String shipmentAddress;
 
-    //@Column(name = "order_date", columnDefinition = "DATE")
-    //private LocalDate orderDate ;
     @Column(name = "order_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime orderDate;
 

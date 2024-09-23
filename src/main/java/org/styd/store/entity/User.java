@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -63,14 +62,10 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();;
 
-//  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     //  ...= new HashSet<>() avoids product set not being initialized/fetched when running .get() on a user
     @JsonManagedReference
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
-
-    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //private Set<Order> orders;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -128,13 +123,6 @@ public class User {
                 .findFirst()
                 .orElse(null);
     }
-    // FIXME code below is the same as above, only for reference
-    //        for (CartItem item : cartItems) {
-//            if (item.getProduct().equals(product)) {
-//                return item;
-//            }
-//        }
-//        return null;
 
     @Override
     public String toString() {
