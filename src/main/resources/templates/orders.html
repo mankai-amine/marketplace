@@ -6,11 +6,6 @@
 <div th:replace="~{fragments/header}"></div>
 
 <div class="container">
-    <div class="product-container mt-5">
-        <div th:each="order, iterStat: ${orders}" class="product-box">
-            <h2 th:text="${order.id}"></h2>
-            <p th:text="${order.orderDate}"></p>
-    <h1 class="roboto-bold">Your completed orders</h1>
     <div class="product-container">
         <div th:each="order, iterStat: ${orders}" class="order-box">
             <h2 th:text="${order.id}" class="roboto-bold"></h2>
