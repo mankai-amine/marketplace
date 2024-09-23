@@ -31,10 +31,10 @@
     <h1>List of Products</h1>
 
     <div class="product-container">
-        <div th:each="product: ${products}" th:if="${product.stockAmount > 0}" class="product-box">
+        <div th:each="product, iterStat: ${products}" th:if="${product.stockAmount > 0}" class="product-box">
             <h2 th:text="${product.name}" style="font-family:'Roboto', sans-serif; font-weight: 700;"></h2>
             <p th:text="${product.description}"></p>
-            <p th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
+            <p class="price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
             <div th:if="${product.imageUrl == null}">No image found.</div>
             <div th:if="${product.imageUrl != null}">
                 <img th:src="@{${product.imageUrl}}" alt="Product Image" style="max-width: 100%;" />

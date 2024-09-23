@@ -89,6 +89,14 @@ public class ProductController {
         Long currentUserId = customUserDetailsService.getCurrentUserId();
         model.addAttribute("currentUserId", currentUserId);
 
+        if (currentUserId != null) {
+            Optional<User> toCheck = userRepository.findById(currentUserId);
+            if (toCheck.isPresent()) {
+                User toShow = toCheck.get();
+                model.addAttribute("user", toShow);
+            }
+        }
+
         return "index";
     }
 
