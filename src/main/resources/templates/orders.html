@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Shop Till You Drop || Orders')}"></head>
+<body>
+
+<div th:replace="~{fragments/header}"></div>
+
+<div th:if="${message}" class="alert alert-success">
+    <p th:text="${message}"></p>
+</div>
+
+
+<div class="container">
+
+    <h1>Orders</h1>
+    <table class="table table-bordered table-striped" id="orderTable">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Order Date</th>
+            <th>Shipment Address</th>
+            <th>Total Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order: ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.orderDate}"></td>
+            <td th:text="${order.shipmentAddress}"></td>
+            <td th:text="${order.totalPrice}"></td>
+            <td>
+                <a th:href="@{/order/{id}(id=${order.id})}" class="btn btn-info">View Order Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div th:if="${orders == null || #lists.isEmpty(orders)}">
+    <p>No Orders available at the moment.</p>
+</div>
+
+</body>
+</html>
