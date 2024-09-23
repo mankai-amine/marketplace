@@ -6,11 +6,11 @@
 <div th:replace="~{fragments/header}"></div>
 <div th:if="${#authorization.expression('isAuthenticated()')}"><a th:href="@{/users/settings}">Account settings</a></div>
 
-<!--<div th:if="${#authorization.expression('isAuthenticated()')}">-->
-<!--    <span th:if="${}">-->
-<!--        <img th:src="@{${user.imageUrl}}" alt="User Image" />-->
-<!--    </span>-->
-<!--</div>-->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <span th:if="${user.picture}">
+        <img th:src="@{${user.picture}}" alt="User Image" style="width:100px;height:100px" />
+    </span>
+</div>
 
 <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/orderItems}">Orders on your Products</a></div>
 
@@ -29,25 +29,17 @@
     </div>
 
     <h1>List of Products</h1>
-    <table class="table table-bordered table-striped" id="productTable">
-        <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>Product Description</th>
-            <th>Price</th>
-            <th>Image</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product: ${products}" th:if="${product.stockAmount > 0}">
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.description}"></td>
-            <td th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></td>
-            <td th:if="${product.imageUrl == null}">No image found.</td>
-            <td th:if="${product.imageUrl != null}">
-                <img th:src="@{${product.imageUrl}}" alt="Product Image" />
-            </td>
-            <td>
+
+    <div class="product-container">
+        <div th:each="product: ${products}" th:if="${product.stockAmount > 0}" class="product-box">
+            <h2 th:text="${product.name}" style="font-family:'Roboto', sans-serif; font-weight: 700;"></h2>
+            <p th:text="${product.description}"></p>
+            <p th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
+            <div th:if="${product.imageUrl == null}">No image found.</div>
+            <div th:if="${product.imageUrl != null}">
+                <img th:src="@{${product.imageUrl}}" alt="Product Image" style="max-width: 100%;" />
+            </div>
+            <div class="product-actions">
                 <a th:href="@{/product/{id}(id=${product.id})}" class="btn btn-info">View</a>
 
                 <span th:if="${isSellerEqualUser}">
@@ -59,12 +51,10 @@
                         <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to restore this product?')">Restore</button>
                     </form>
                 </span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            </div>
+        </div>
+    </div>
 </div>
-
 
 <div th:if="${products == null || #lists.isEmpty(products)}">
     <p>No Products available at the moment.</p>

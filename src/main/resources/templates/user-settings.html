@@ -3,10 +3,13 @@
 <head th:replace="~{fragments/head :: head('Settings')}">
 </head>
 
-
 <body class="d-flex align-items-center justify-content-center">
 
 <div class="container my-5">
+    <span th:if="${user.picture}">
+        Current Profile Picture
+        <img th:src="@{${user.picture}}" alt="User Image" style="width:150px;height:150px" />
+    </span>
 
     <form th:action="@{/users/settings/edit}" th:object="${user}" method="post" class="form col-5 mx-auto" enctype="multipart/form-data">
 
@@ -73,23 +76,6 @@
     <hr/>
     <a th:href="@{/}">Back to home page</a>
 </div>
-
-
-<script>
-    function enableInput(inputId) {
-        document.getElementById(inputId).disabled=false;
-    }
-
-    function enablePass(inputId) {
-        document.getElementById(inputId).disabled=false;
-        document.getElementById("confirmPass").style.display = "block";
-    }
-
-    function confirmSave() {
-        document.querySelectorAll('input:disabled').forEach(input => {
-            input.disabled = false;
-        });
-    }
-</script>
+<script src="/user-settings.js"></script>
 </body>
 </html>

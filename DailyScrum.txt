@@ -106,3 +106,90 @@
 - Move onto new tasks once current functionality is stable
 3. Need assistance / figure things out
 - Start looking into Cart and checkout for future workdays
+
+*****
+
+2024/09/19 Amine
+1. Done since last scrum
+- Users can edit their account settings
+- Integrate Category into Product
+2. Plan until next Scrum
+- Double validation when the user updates his password
+- Look at how Cart functions
+3. Need assistance / figure things out
+- Cart functioning
+
+2024/09/19 Sean
+1. Done since last scrum
+- Bulk of work on Admin/user finished
+- Changed product and Category to toggle is_deleted boolean instead of full deletion
+- Added functionality to "restore" deleted products and categories (swap boolean back)
+- Some changes to html and thymeleaf for consistency(adding fragments)
+2. Plan until next Scrum
+- Finishing setting up admin/user (picture upload, testing)
+- Look into how to start working on Cart and orders/order_items
+3. Need assistance / figure things out
+- Cart implementation
+
+*****
+
+2024/09/20 Amine
+1. Done since last scrum
+- Finalized user settings
+- Set up Heroku
+2. Plan until next Scrum
+- Work on orders and order_items
+3. Need assistance / figure things out
+- research how to properly do a transaction with Spring Boot
+
+2024/09/20 Sean
+1. Done since last scrum
+- Admin user editing
+- Began work on Cart(not in db) and CartItem class
+2. Plan until next Scrum
+- Continue working on cart classes
+3. Need assistance / figure things out
+- Stripe implementation
+
+*****
+
+2024/09/21 Amine
+1. Done since last scrum
+- Set up  entities and repositories for orders and order_items
+- Set up Checkout controller
+2. Plan until next Scrum
+- finish working on Checkout
+- allow users to see their orders
+3. Need assistance / figure things out
+- research how to incorporate Stripe into Payment Service
+
+2024/09/21 Sean
+1. Done since last scrum
+- Set up CartItem entity, CartRepository, most of CartController methods
+- Fixed recursive errors when saving our interrelated objects by editing entity annotations and creating new methods
+2. Plan until next Scrum
+- Finish /add, /remove, /clear functionality for cart, add html elements for users to perform the functions
+- Fix errors that obstruct user flow
+3. Need assistance / figure things out
+- Making sure the application does not experience adverse effects from Entity edits I made
+
+*****
+
+2024/09/23 Amine
+1. Done since last scrum
+- finish working on Checkout
+- allow users admins and buyers to see orders, and allow sellers to see their sold products
+2. Plan until next Scrum
+- work on styling
+3. Need assistance / figure things out
+-
+
+2024/09/23 Sean
+1. Done since last scrum
+- Finished cart functionality and javascript for a cleaner user experience
+- Implemented user feedback when interacting with the cart
+- Bug fixes
+2. Plan until next Scrum
+- Work on styling and design on the site
+3. Need assistance / figure things out
+-
