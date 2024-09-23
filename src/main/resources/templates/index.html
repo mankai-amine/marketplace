@@ -4,7 +4,6 @@
 <body>
 
 <div th:replace="~{fragments/header}"></div>
-<div th:if="${#authorization.expression('isAuthenticated()')}"><a th:href="@{/users/settings}">Account settings</a></div>
 
 <div th:if="${#authorization.expression('isAuthenticated()')}">
     <span th:if="${user.picture}">
@@ -12,17 +11,15 @@
     </span>
 </div>
 
-<div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}"><a th:href="@{/seller/orderItems}">Orders on your Products</a></div>
+<div th:if="${message}" class="alert alert-success">
+    <p th:text="${message}"></p>
+</div>
+
 
 <div class="container">
-    <div th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_SELLER'')')}">
-        <span th:if="${isSellerEqualUser}">
-            <a th:href="@{/seller/add}" class="btn btn-info">Add a product</a>
-        </span>
-        <a th:href="@{/seller/{currentUserId}/products(currentUserId=${currentUserId})}" class="btn btn-info">View Your Products</a>
-    </div>
-
     <h1 class="roboto-bold">List of Products</h1>
+
+    <div class="product-container mt-5">
 
     <div class="product-container">
         <div th:each="product, iterStat: ${products}" th:if="${product.stockAmount > 0}" class="product-box">
@@ -53,6 +50,6 @@
 <div th:if="${products == null || #lists.isEmpty(products)}">
     <p>No Products available at the moment.</p>
 </div>
-
+</div>
 </body>
 </html>

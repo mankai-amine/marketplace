@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Product || Single View')}"></head>
+
+
 <body>
 <div th:replace="~{fragments/header}"></div>
 
@@ -37,7 +39,6 @@
         </tbody>
     </table>
 
-
     <span th:if="${#authorization.expression('isAuthenticated() and hasAuthority(''ROLE_BUYER'')')} and ${product.isDeleted == false}
     and ${product.stockAmount != 0}">
         <input type="hidden" name="productId" th:value="${product.id}"/>
@@ -45,12 +46,6 @@
         <button th:onclick="'addToCart(' + ${product.id} + ', document.getElementById(\'amountProd\').value)'" type="button">Add to Cart</button>
     </span>
 
-
-    <a th:href="@{/}" class="btn btn-info">Back to All Products</a>
-
-    <span th:if="${isSellerEqualUser}">
-        <a th:href="@{/seller/{sellerId}/products(sellerId=${sellerId})}" class="btn btn-info">Back to Your Products</a>
-    </span>
 </div>
 <script src="/single-product.js"></script>
 </body>
