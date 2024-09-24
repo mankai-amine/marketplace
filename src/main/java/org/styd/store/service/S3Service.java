@@ -22,7 +22,7 @@ public class S3Service {
     public String uploadFile(MultipartFile file, String directory) {
         // Create in S3 the file name
         String uniqueName = UUID.randomUUID().toString();
-        String fileName = directory + uniqueName;
+        String fileName = directory + uniqueName+".jpg";
 
 
         try {
