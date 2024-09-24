@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Settings')}">
+</head>
+
+<body >
+<div th:replace="~{fragments/header}"></div>
+
+<div class="container my-5 d-flex align-items-center justify-content-center">
+    <span th:if="${user.picture}">
+        <img th:src="@{${user.picture}}" alt="User Image" style="width:150px;height:150px" />
+    </span>
+
+    <form th:action="@{/users/settings/edit}" th:object="${user}" method="post" class="form col-5 mx-auto" enctype="multipart/form-data">
+
+        <div class="form-group mb-3">
+            <label for="email">Email</label>
+            <div style="display: flex">
+                <input id="email" class="form-control" type="email" th:field="*{email}" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('email')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="password">Password:</label>
+            <div style="display: flex">
+                <input id="password" class="form-control" type="password" th:field="*{password}" minlength="6" maxlength="100" placeholder="**********" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enablePass('password')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group mb-3" style="display: none" id="confirmPass" >
+            <label for="password2">Confirm Password:</label>
+            <div>
+                <input id="password2" class="form-control" type="password" th:field="*{password2}">
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="address">Address:</label>
+            <div style="display: flex">
+                <input id="address" class="form-control" type="text" th:field="*{address}" disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('address')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="creditCard">Credit card:</label>
+            <div style="display: flex">
+                <input id="creditCard" class="form-control" type="text" th:field="*{creditCard}" placeholder="**********"
+                       disabled>
+                <span class="btn btn-outline-primary btn-md ms-2" onclick="enableInput('creditCard')">Edit</span>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('creditCard')}" th:errors="*{creditCard}"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="profilePicture">Upload Profile Picture:</label>
+            <input type="hidden" th:field="*{picture}" >
+            <input type="file" id="profilePicture" name="file">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary" onclick="return confirmSave()">Save</button>
+        </div>
+
+        <input type="hidden" th:field="*{id}"/>
+
+    </form>
+    <hr/>
+</div>
+<script src="/user-settings.js"></script>
+</body>
+</html>

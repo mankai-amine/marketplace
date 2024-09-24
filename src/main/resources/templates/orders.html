@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Shop Till You Drop || Orders')}"></head>
+<body>
+
+<div th:replace="~{fragments/header}"></div>
+
+<div class="container">
+    <div class="product-container">
+        <div th:each="order, iterStat: ${orders}" class="order-box">
+            <h2 th:text="${order.id}" class="roboto-bold"></h2>
+            <p th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd || HH:mm:ss')}"></p>
+            <p th:text="${order.shipmentAddress}"></p>
+            <p class="price" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></p>
+
+            <div class="product-actions">
+                <a th:href="@{/order/{id}(id=${order.id})}" class="btn btn-info">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:if="${orders == null || #lists.isEmpty(orders)}">
+    <p>No Orders available at the moment.</p>
+</div>
+
+</body>
+</html>

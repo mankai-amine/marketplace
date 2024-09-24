@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Orders || Single View')}"></head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+
+<div class="container">
+    <h1 class="roboto-bold">Order Details</h1>
+    <div class="product-container">
+        <div th:each="orderItemWithName: ${orderItemsWithNames}" class="order-details">
+            <h2 th:text="${orderItemWithName.get('productName')}" class="roboto-bold"></h2>
+            <p th:text="${orderItemWithName.get('orderItem').amount}"></p>
+
+            <p class="price" th:text="'$' + ${#numbers.formatDecimal(orderItemWithName.get('orderItem').price, 1, 2)}"></p>
+
+        </div>
+    </div>
+
+    <a th:href="@{/orders}" class="btn btn-info">Back to All Orders</a>
+</div>
+</body>
+</html>

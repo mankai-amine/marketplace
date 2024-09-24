@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Admin Users Overview')}"></head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<div class="card">
+    <a th:href="@{/admin/users/add}" class="btn btn-primary mt-auto">Add a User</a>
+    <div class="card-header">
+        <h5 class="mb-0">Existing Users</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.role}"></td>
+                <td>
+                    <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-warning">Edit</a>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
