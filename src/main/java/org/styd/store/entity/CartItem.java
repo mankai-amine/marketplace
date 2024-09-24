@@ -28,9 +28,6 @@ public class CartItem {
 
     private int amount;
 
-    // FIXME will an issue arise if a cartItem is pulled from db with an id already?
-    // ^May need allargsconstructor
-
     public CartItem(User buyer, Product product, int amount) {
         this.buyer = buyer;
         this.product = product;
