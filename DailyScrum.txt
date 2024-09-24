@@ -73,7 +73,6 @@
 - Users can edit their information
 
 3. Need assistance / figure things out
--
 
 2024/09/17 Sean
 1. Done since last scrum
@@ -95,7 +94,7 @@
 - Users can edit their information
 - Integrate Category into Product (if Category is ready)
 3. Need assistance / figure things out
--
+
 
 2024/09/18 Sean
 1. Done since last scrum
@@ -182,7 +181,7 @@
 2. Plan until next Scrum
 - work on styling
 3. Need assistance / figure things out
--
+
 
 2024/09/23 Sean
 1. Done since last scrum
@@ -192,4 +191,3 @@
 2. Plan until next Scrum
 - Work on styling and design on the site
 3. Need assistance / figure things out
--
