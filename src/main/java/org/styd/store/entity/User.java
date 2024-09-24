@@ -56,7 +56,6 @@ public class User {
     @Column(name = "credit_card")
     private String creditCard;
 
-
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();;
 
