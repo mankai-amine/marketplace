@@ -19,7 +19,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @NotBlank
     @Size(min = 4, max = 255, message="Product name must be between {min} and {max} characters")
     private String name;
@@ -28,13 +27,11 @@ public class Product {
     @Size(min = 10, max = 255, message="Product description must be between {min} and {max} characters")
     private String description;
 
-    //@NotBlank(message = "Price is required.")
     private double price;
 
     @Column(name = "stock_amount")
     private int stockAmount;
 
-    // FIXIT @Default here?
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -46,13 +43,9 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category prodCategory;
 
-    // FIXME? this being lazy is not enough to fix stackoverflow by itself
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable=false)
     private User seller;
 
-    // TODO maybe don't want this here, since orderItems is a snapshot.
-    // @OneToMany(...)
-    // private Set<OrderItems> orderItems;
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Register')}"></head>
-
-
-<body class="d-flex align-items-center justify-content-center">
+<!--class="d-flex align-items-center justify-content-center"-->
+<body>
+<div th:replace="~{fragments/header}"></div>
 
 <div class="container my-5">
 
@@ -38,7 +38,6 @@
 
         <div class="form-group mb-3">
             <select name="role" class="form-control" th:field="*{role}">
-                <option value="ADMIN">Admin</option>
                 <option value="BUYER">Buyer</option>
                 <option value="SELLER">Seller</option>
             </select>
@@ -49,7 +48,6 @@
         </div>
 
     </form>
-    <p>You already have an account? <span><a th:href="@{/login}"></a></span></p>
 </div>
 </body>
 </html>

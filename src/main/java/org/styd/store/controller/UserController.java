@@ -95,6 +95,7 @@ public class UserController {
 
         if (!user.getId().equals(currentUser.getUser().getId())){
             redirAttrs.addFlashAttribute("flashMessageError", "User mismatch, access denied.");
+            return "redirect:/users/settings";
         }
 
         // if the form input email exist in DB
@@ -119,7 +120,7 @@ public class UserController {
             user.setPassword(encodedPassword);
         } else{
             // keep the existing password card if no new one is provided
-            user.setPassword(currentUser.getPassword());
+            user.setPassword(currentUser.getUser().getPassword());
         }
 
         // store the file URL in the database
@@ -130,9 +131,14 @@ public class UserController {
 
         // Hash the credit card and store it in the database
         if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()) {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
-            user.setCreditCard(encodedCreditCard);
+            if (checkCreditCard(user.getCreditCard())) {
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
+                user.setCreditCard(encodedCreditCard);
+            } else {
+                result.rejectValue("creditCard", "creditCardNotValid", "Credit Card must be only numbers and have 12-16 characters.");
+                return "user-settings";
+            }
         } else {
             // keep the existing credit card if no new one is provided
             user.setCreditCard(currentUser.getUser().getCreditCard());
@@ -140,6 +146,7 @@ public class UserController {
 
         user.setUsername(currentUser.getUser().getUsername());
         user.setRole(currentUser.getUser().getRole());
+        user.setCartItems(currentUser.getUser().getCartItems());
 
         userRepo.save(user);
         redirAttrs.addFlashAttribute("flashMessageSuccess", "Settings updated successfully.");
@@ -299,9 +306,13 @@ public class UserController {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
-        String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
+        if (!checkCreditCard(user.getCreditCard())){
+            result.rejectValue("creditCard", "creditCardNotValid", "Credit Card must be only numbers and have 12-16 characters.");
+            return "admin-users-add";
+        }
+        String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
         user.setPassword(encodedPassword);
-        user.setCreditCard(hashedCreditCard);
+        user.setCreditCard(encodedCreditCard);
 
         userRepo.save(user);
         redirectAttributes.addFlashAttribute("flashMessageSuccess", "User added successfully.");
@@ -333,6 +344,7 @@ public class UserController {
             // make sure the username doesn't already exist
             if (userRepo.findByUsername(user.getUsername()) != null) {
                 result.rejectValue("username", "usernameExists", "Username already exists");
+                return "redirect:/admin/users/edit/" + user.getId();
             }
             dbComparison.setUsername(user.getUsername());
         }
@@ -341,6 +353,7 @@ public class UserController {
             // since they don't match, db cannot already have an email like the one input on form
             if (userRepo.findByEmail(user.getEmail()) != null){
                 result.rejectValue("email", "emailExists", "Email already exists");
+                return "redirect:/admin/users/edit/" + user.getId();
             }
             dbComparison.setEmail(user.getEmail());
         }
@@ -365,14 +378,19 @@ public class UserController {
                 user.setPassword(encodedPassword);
             } else {
                 result.rejectValue("password2", "passwordsDoNotMatch", "Passwords must match");
-                return "admin-users-edit";
+                return "redirect:/admin/users/edit/" + user.getId();
             }
         }
 
         // check if credit card edited
         if (user.getCreditCard() != null && !user.getCreditCard().isEmpty()){
-            String hashedCreditCard = DigestUtils.sha256Hex(user.getCreditCard());
-            dbComparison.setCreditCard(hashedCreditCard);
+            if (!checkCreditCard(user.getCreditCard())){
+                result.rejectValue("creditCard", "creditCardNotValid", "Credit Card must be only numbers and have 12-16 characters.");
+                return "redirect:/admin/users/edit/" + user.getId();
+            }
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encodedCreditCard = passwordEncoder.encode(user.getCreditCard());
+            dbComparison.setCreditCard(encodedCreditCard);
         }
 
         userRepo.save(dbComparison);
@@ -380,8 +398,9 @@ public class UserController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/admin/orders")
-    public String adminOrders(){
-        return "DEPRECATEDadmin-orders";
+    private boolean checkCreditCard(String creditCardNumber) {
+        String regexCheck = "^\\d{12,16}$";
+        return creditCardNumber.matches(regexCheck);
     }
+
 }

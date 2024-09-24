@@ -39,7 +39,7 @@
                 </span>
 
                 <span sec:authorize="isAuthenticated()" class="d-flex align-items-center ml-4"> <!-- Increased margin -->
-                    Welcome, <span sec:authentication="name"></span>!
+                    Welcome,&nbsp<span sec:authentication="name"></span>!
                     <a th:href="@{/logout}" class="btn btn-danger ml-2">Logout</a>
                 </span>
             </div>

@@ -4,6 +4,7 @@
 <body>
 <div th:replace="~{fragments/header}"></div>
 <div id="cartNotif"></div>
+<div th:replace="~{fragments/flash-messages}"></div>
 
 <div th:if="${cartItems}">
     <table class="table table-bordered table-striped mt-5" id="productTable">
@@ -28,11 +29,6 @@
                 <img th:src="@{${cartItem.product.imageUrl}}" alt="Product Image" />
             </td>
             <td>
-<!--                <form th:action="@{/api/cart/remove}">-->
-<!--                    <input type="hidden" name="productId" th:value="${cartItem.product.id}"/>-->
-<!--                    <input type="hidden" name="amount" value="1"/>-->
-<!--                    <button onclick="removeFromCart(productId)" type="submit">Remove from Cart</button>-->
-<!--                </form>-->
                 <button th:onclick="'addToCartButton(' + ${cartItem.product.id} + ')'" type="button">Add One</button>
                 <button th:id="'removeButton' + ${cartItem.product.id}"
                         th:onclick="'removeFromCartButton(' + ${cartItem.product.id} + ')'"
