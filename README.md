@@ -1,4 +1,4 @@
-# ShopTillYouDrop : A full-stack web application for a marketplace 
+# ShopTillYouDrop : A full-stack web application for a Marketplace 
 ## Technologies:
 - Spring Boot (with Spring Security, Spring Web, Spring Data JPA)
 - MySQL
@@ -10,7 +10,7 @@
 There are three types of users: Admin, Seller, and Buyer. 
 All users can register, login, search and view the products. Although unauthenticated visitors can view products, they will be prompted to sign in or log in to begin adding things to a cart.  
 Admins manage the lists of users, categories, and orders throughout the site. They can also add, edit, and in some cases delete.  
-Sellers can view, create, update and delete listings of products they own.  
+Sellers can view, create, update and delete listings of products they own. They also can view their sales.    
 Buyers can add and remove products to/from their cart and proceed to checkout. They also can view their orders.  
 
 ## How to run the app:
