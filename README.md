@@ -1,31 +1,80 @@
-# ShopTillYouDrop :  
-A full-stack web application for a Marketplace that connects sellers with customers.
-## Technologies:
-- Spring Boot (with Spring Security, Spring Web, Spring Data JPA)
-- MySQL
-- Thymeleaf
-- Bootstrap
-- AWS (Amazon RDS for dataabse, Amazon S3 for file storage)
-- Heroku for app hosting
-## Functionalities:
-There are three types of users: Admin, Seller, and Buyer. All users can register, login, search and view the products. 
-- Unauthenticated visitors can view products, but they will be prompted to sign in or log in before adding products to a cart.  
-- Admins can manage the lists of users, categories, and orders throughout the site. They can also add, edit, and in some cases delete.  
-- Sellers can view, create, update and delete listings of products they own. They also can view their sales.    
-- Buyers can add and remove products to/from their cart and proceed to checkout. They also can view their orders.  
 
-## How to run the app:
-- Clone the repository to your local machine
-- In the project's root directory, create a .env file to define your environment variables.
-- Open the .env file and add the required environment variables:
-  * MYSQL_HOST: The hostname or URL of the MySQL database.
-  * MYSQL_PORT: The port MySQL is running on (default is 3306).
-  * MYSQL_DB: The name of the MySQL database.
-  * DB_USER: The username for the MySQL database.
-  * DB_PASSWORD: The password for the MySQL database.
-  * PORT: The port on which the application will run (default is 8080).
-  * accessKeyId: The AWS access key for programmatic access.
-  * secretKey: The AWS secret access key.
-  * bucketName: The name of the S3 bucket used by the application.
-  * region: The AWS region where the S3 bucket is located.
-- In IntelliJ, go to "Run", then "Edit Configurations", then add "Environment Variables"; and add the .env file's path as a line under "Modify Options".
+# Overview
+
+A full-stack web application for a marketplace platform that connects sellers with customers.
+
+## Technologies
+
+- **Backend**: Spring Boot (with Spring Security, Spring Web, Spring Data JPA)
+- **Database**: MySQL
+- **Frontend**: Thymeleaf, Bootstrap 5
+- **Cloud Services**: 
+  - AWS RDS for database
+  - AWS S3 for image storage
+- **Payment Processing**: Stripe API
+
+## Features
+
+- User authentication and role-based authorization
+- Product catalog with search and filtering
+- Shopping cart functionality
+- Secure checkout process
+- Order management system
+- User profile management
+- Product listing management for sellers
+- Admin dashboard with comprehensive controls
+
+## Installation & Setup
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/shoptillyoudrop.git
+   cd shoptillyoudrop
+   ```
+
+2. **Configure Environment Variables**
+   Create a `dev.env` file in the project's root directory with the following variables:
+
+   ```properties
+   # Database Configuration
+   MYSQL_HOST=your-database-host
+   MYSQL_PORT=3306
+   MYSQL_DB=marketplace
+   DB_USER=your-username
+   DB_PASSWORD=your-password
+   
+   # Server Configuration  
+   PORT=8080
+   
+   # AWS Configuration
+   accessKeyId=your-aws-access-key
+   secretKey=your-aws-secret-key
+   bucketName=your-s3-bucket-name
+   region=your-aws-region
+   
+   # Payment Processing
+   stripeSecretKey=your-stripe-secret-key
+   ```
+
+3. **Set Up Development Environment**
+    In IntelliJ IDEA:
+    - Go to Run → Edit Configurations
+    - Add Environment Variables under Modify Options
+    - Add the path to your dev.env file
+
+4. **Build and Run the Application**
+   ```bash
+   ./mvnw clean install
+   ./mvnw spring-boot:run
+   ```
+
+## 💾 Database Configuration
+
+The application uses MySQL database with the following schema:
+- Users: Stores user information and credentials
+- Products: Manages product listings and inventory
+- Orders: Tracks customer orders
+- Order_Items: Stores line items for each order
+- Cart_Items: Manages shopping cart contents
+
+The application uses Hibernate with `spring.jpa.hibernate.ddl-auto=update` to automatically manage schema changes.
