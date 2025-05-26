@@ -68,7 +68,7 @@ A full-stack web application for a marketplace platform that connects sellers wi
    ./mvnw spring-boot:run
    ```
 
-## 💾 Database Configuration
+## Database Structure
 
 The application uses MySQL database with the following schema:
 - Users: Stores user information and credentials
